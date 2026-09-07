@@ -157,168 +157,400 @@ def parse_custom_jd(jd_text: str):
             role_title = line.split(":", 1)[1].strip()
             break
 
-    exp_min = 6.0
-    exp_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:-|to)\s*(\d+)?\s*(?:years|yrs)", jd_text, re.IGNORECASE)
-    if exp_m:
-        exp_min = float(exp_m.group(1))
+    mandatory = {}
+    good_to_have = {}
+    current_sec = "mandatory"
+    for line in lines:
+        lower = line.lower()
+        if any(h in lower for h in ["good to have", "preferred", "nice to have", "bonus", "secondary"]):
+            current_sec = "good"
+            continue
+        elif any(h in lower for h in ["must have", "mandatory", "required", "core requirements", "qualifications"]):
+            current_sec = "mandatory"
+            continue
 
-    return role_title, exp_min
+        m = re.match(r"^[-*•\d.]+\s*(.+)$", line)
+        if m:
+            item = m.group(1).strip()
+            if len(item) > 3 and not item.endswith(":"):
+                title = item.split(":")[0].split("-")[0].strip()
+                if len(title) > 40:
+                    title = title[:37] + "..."
+                if current_sec == "mandatory":
+                    mandatory[title] = (6, item)
+                else:
+                    good_to_have[title] = (2, item)
 
-def evaluate_candidate(candidate_name: str, resume_text: str, custom_jd_text: str = None) -> dict:
-    years_exp = extract_years_experience(resume_text)
-    lower_text = resume_text.lower()
-    
-    results = {}
-    if "javascript" in lower_text or "typescript" in lower_text or " js " in lower_text or " ts " in lower_text:
-        results["JavaScript / TypeScript"] = ("Matched", "JS/TS automation used in project deliverables")
-    else:
-        results["JavaScript / TypeScript"] = ("Missing", "no evidence found")
-        
-    if "python" in lower_text or "pytest" in lower_text:
-        results["Python"] = ("Matched", "Python automation evidenced in deliverables")
-    else:
-        results["Python"] = ("Missing", "no evidence found")
+    if not mandatory:
+        mandatory = DEFAULT_MANDATORY_WEIGHTS
+    if not good_to_have:
+        good_to_have = DEFAULT_GOOD_TO_HAVE_WEIGHTS
 
-    if "cypress" in lower_text:
-        results["Cypress"] = ("Matched", "Cypress automation evidenced in deliverables")
-    else:
-        results["Cypress"] = ("Missing", "no evidence found")
+    return role_title, mandatory, good_to_have
 
-    if "playwright" in lower_text:
-        results["Playwright"] = ("Matched", "Playwright test automation evidenced in deliverables")
-    else:
-        results["Playwright"] = ("Missing", "no evidence found")
-
-    if "pytest" in lower_text:
-        results["Pytest"] = ("Matched", "Pytest framework evidenced in deliverables")
-    else:
-        results["Pytest"] = ("Missing", "no evidence found")
-
-    if "page object" in lower_text or "pom" in lower_text or "framework" in lower_text:
-        results["Automation Framework Design"] = ("Matched", "Page Object Model framework architecture design")
-    else:
-        results["Automation Framework Design"] = ("Missing", "no evidence found")
-
-    if "cucumber" in lower_text or "bdd" in lower_text or "specflow" in lower_text or "selenium" in lower_text:
-        results["UI / Web Testing + BDD"] = ("Matched", "End-to-end UI & BDD testing evidenced")
-    elif "ui" in lower_text or "web testing" in lower_text:
-        results["UI / Web Testing + BDD"] = ("Partial match", "UI testing mentioned without explicit BDD syntax")
-    else:
-        results["UI / Web Testing + BDD"] = ("Missing", "no evidence found")
-
-    if "postman" in lower_text or "rest assured" in lower_text or "rest api" in lower_text or "soap ui" in lower_text:
-        results["API Testing"] = ("Matched", "REST API automation and payload validation")
-    else:
-        results["API Testing"] = ("Missing", "no evidence found")
-
-    if "test plan" in lower_text or "strategy" in lower_text or "rtm" in lower_text or "regression" in lower_text or "stlc" in lower_text:
-        results["STLC & Test Strategy"] = ("Matched", "STLC test strategy, regression suites, and test planning")
-    else:
-        results["STLC & Test Strategy"] = ("Missing", "no evidence found")
-
-    if "jira" in lower_text or "alm" in lower_text or "testrail" in lower_text or "tfs" in lower_text or "azure devops" in lower_text:
-        results["Test Management Tools"] = ("Matched", "Jira / ALM defect lifecycle and test tracking")
-    else:
-        results["Test Management Tools"] = ("Missing", "no evidence found")
-
-    if "agile" in lower_text or "scrum" in lower_text or "kanban" in lower_text or "sprint" in lower_text:
-        results["Agile / Kanban"] = ("Matched", "Agile ceremonies, sprint planning, and defect triage")
-    else:
-        results["Agile / Kanban"] = ("Missing", "no evidence found")
-
-    if "model validation" in lower_text or "testing ai" in lower_text or "ai testing" in lower_text or "genai" in lower_text:
-        results["AI Solution Testing"] = ("Matched", "AI model validation and GenAI solution testing")
-    elif "ai tools" in lower_text or "copilot" in lower_text or "chatgpt" in lower_text or "claude" in lower_text:
-        results["AI Solution Testing"] = ("Partial match", "AI-assisted tools used; no model testing deliverables")
-    else:
-        results["AI Solution Testing"] = ("Missing", "no evidence found")
-
-    if "mcp" in lower_text or "rag" in lower_text or "agentic" in lower_text:
-        results["Agentic AI"] = ("Matched", "Agentic architecture (MCP/RAG/Prompt engineering)")
-    elif "prompting" in lower_text or "ai solution" in lower_text:
-        results["Agentic AI"] = ("Claimed but unevidenced", "Claimed AI prompting without agentic deliverables")
-    else:
-        results["Agentic AI"] = ("Missing", "no evidence found")
-
-    good_to_have_results = {}
-    good_to_have_results["AWS / Azure Cloud Exposure"] = ("Matched" if ("aws" in lower_text or "azure" in lower_text or "cloud" in lower_text) else "Missing", "Cloud test environments")
-    good_to_have_results["CI/CD Integration"] = ("Matched" if ("jenkins" in lower_text or "ci/cd" in lower_text or "pipeline" in lower_text or "github actions" in lower_text) else "Missing", "CI/CD automated execution")
-    good_to_have_results["Monitoring & Observability"] = ("Matched" if ("splunk" in lower_text or "grafana" in lower_text or "power bi" in lower_text) else "Missing", "Log analysis & monitoring")
-    good_to_have_results["No-Code / Low-Code Tools"] = ("Matched" if ("mabl" in lower_text or "testcomplete" in lower_text) else "Missing", "No-code testing tools")
-    good_to_have_results["Pharma / Life Sciences Domain"] = ("Matched" if ("pharma" in lower_text or "clinical" in lower_text or "ctms" in lower_text or "healthcare" in lower_text or "life sciences" in lower_text) else "Missing", "Pharma / Clinical Trial domain experience")
-
-    factor_map = {"Matched": 1.0, "Partial match": 0.6, "Claimed but unevidenced": 0.3, "Missing": 0.0}
-    mandatory_score = sum(DEFAULT_MANDATORY_WEIGHTS[k][0] * factor_map.get(results[k][0], 0.0) for k in DEFAULT_MANDATORY_WEIGHTS)
-    good_to_have_score = sum(DEFAULT_GOOD_TO_HAVE_WEIGHTS[k][0] * factor_map.get(good_to_have_results[k][0], 0.0) for k in DEFAULT_GOOD_TO_HAVE_WEIGHTS)
-    good_to_have_score = min(good_to_have_score, 10.0)
-
-    exp_fit_score = 0.0
-    gate_failed = False
-    min_exp_required = 6.0
+def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict:
     if custom_jd_text:
-        _, min_exp_required = parse_custom_jd(custom_jd_text)
-
-    if years_exp < min_exp_required and years_exp > 0.0:
-        exp_fit_score = 0.0
-        gate_failed = True
-    elif min_exp_required <= years_exp <= (min_exp_required + 4.0):
-        exp_fit_score = 5.0
-    elif (min_exp_required + 4.0) < years_exp <= (min_exp_required + 6.0):
-        exp_fit_score = 3.0
-    elif years_exp > (min_exp_required + 6.0):
-        exp_fit_score = 2.0
+        _, mandatory_weights, good_weights = parse_custom_jd(custom_jd_text)
     else:
-        exp_fit_score = 4.0
+        mandatory_weights = DEFAULT_MANDATORY_WEIGHTS
+        good_weights = DEFAULT_GOOD_TO_HAVE_WEIGHTS
 
-    raw_score = mandatory_score + good_to_have_score + exp_fit_score
+    exp_years = extract_years_experience(text)
+    lower_text = text.lower()
+
+    # Rule 1: Experience Gate
+    if 0 < exp_years < 6.0:
+        return {
+            "name": name,
+            "years_exp": exp_years,
+            "mandatory": {k: ("Missing", "Gate Failed: Total experience under 6.0 years cutoff.") for k in mandatory_weights},
+            "good_to_have": {k: ("Missing", "Gate Failed: Evaluated 0 due to experience cutoff.") for k in good_weights},
+            "mandatory_score": 0.0,
+            "good_score": 0.0,
+            "exp_score": 0.0,
+            "raw_score": 0.0,
+            "final_score": 0.0,
+            "verdict": "Screening Failed (Disqualified)",
+            "override_note": f"Rule #1 Hard Gate Triggered: Total experience {exp_years:.1f} yrs < 6.0 yrs hard cutoff."
+        }
+
+    skill_keywords = {
+        "JavaScript / TypeScript": ["javascript", "typescript", "js", "ts", "es6", "node"],
+        "Python": ["python", "pytest", "django", "flask"],
+        "Cypress": ["cypress"],
+        "Playwright": ["playwright"],
+        "Pytest": ["pytest"],
+        "Automation Framework Design": ["framework", "page object model", "pom", "modular framework", "hybrid framework", "architecture"],
+        "UI / Web Testing + BDD": ["cucumber", "bdd", "specflow", "gherkin", "selenium", "ui automation", "web testing"],
+        "API Testing": ["rest", "api", "postman", "rest assured", "restassured", "soap", "endpoint", "microservices"],
+        "STLC & Test Strategy": ["stlc", "test strategy", "test plan", "rtm", "regression", "qa process"],
+        "Test Management Tools": ["jira", "alm", "quality center", "testrail", "zephyr", "qtest", "azure devops"],
+        "Agile / Kanban": ["agile", "scrum", "sprint", "kanban", "ceremonies", "standup"],
+        "AI Solution Testing": ["ai testing", "llm", "genai", "generative ai", "model validation", "ml testing", "prompt"],
+        "Agentic AI": ["agentic", "mcp", "rag", "agents", "langchain", "autogen", "crewai"],
+        "AWS / Azure Cloud Exposure": ["aws", "azure", "cloud", "ec2", "s3", "lambda"],
+        "CI/CD Integration": ["ci/cd", "jenkins", "github actions", "gitlab", "pipeline", "bamboo"],
+        "Monitoring & Observability": ["splunk", "grafana", "dynatrace", "datadog", "cloudwatch", "power bi"],
+        "No-Code / Low-Code Tools": ["mabl", "testcomplete", "tosca", "accelq", "katalon"],
+        "Pharma / Life Sciences Domain": ["pharma", "clinical", "healthcare", "gxp", "fda", "21 cfr", "life sciences", "iqvia", "philips", "novartis", "pfizer"]
+    }
+
+    mandatory_results = {}
+    mandatory_score = 0.0
+    for skill, (weight, _) in mandatory_weights.items():
+        kw_list = skill_keywords.get(skill, [w.lower() for w in skill.split() if len(w) > 2])
+        matched_kw = [kw for kw in kw_list if kw in lower_text]
+        
+        if matched_kw:
+            is_evidenced = any(term in lower_text for term in ["implemented", "designed", "developed", "automated", "created", "reduced", "led", "migrated", "built", "tested", "project"])
+            if is_evidenced:
+                status = "Matched"
+                factor = 1.00
+                evidence = f"Demonstrated in project deliverables ({', '.join(matched_kw[:2])})"
+            else:
+                status = "Claimed but unevidenced"
+                factor = 0.30
+                evidence = f"Listed in skills/summary without detailed deliverable ({', '.join(matched_kw[:2])})"
+        else:
+            status = "Missing"
+            factor = 0.00
+            evidence = "Not found in profile text"
+            
+        points = weight * factor
+        mandatory_score += points
+        mandatory_results[skill] = (status, evidence)
+
+    good_results = {}
+    good_score = 0.0
+    for skill, (weight, _) in good_weights.items():
+        kw_list = skill_keywords.get(skill, [w.lower() for w in skill.split() if len(w) > 2])
+        matched_kw = [kw for kw in kw_list if kw in lower_text]
+        if matched_kw:
+            status = "Matched"
+            factor = 1.00
+            evidence = f"Evidenced in profile ({', '.join(matched_kw[:2])})"
+        else:
+            status = "Missing"
+            factor = 0.00
+            evidence = "Not evidenced"
+        points = weight * factor
+        good_score += points
+        good_results[skill] = (status, evidence)
+
+    if 6.0 <= exp_years <= 10.0:
+        exp_score = 5.0
+    elif 10.0 < exp_years <= 12.0:
+        exp_score = 3.0
+    elif exp_years > 12.0:
+        exp_score = 2.0
+    else:
+        exp_score = 4.0
+
+    raw_score = mandatory_score + good_score + exp_score
     final_score = raw_score
-    verdict = ""
-    override_note = "None"
+    override_note = "Standard capacity calculation"
 
-    if gate_failed:
-        final_score = 0.0
-        verdict = f"Screening Failed · Reject (Experience Gate < {min_exp_required:.1f} yrs) ❌"
-        override_note = f"Rule #1: Total experience ({years_exp:.1f} yrs) < {min_exp_required:.1f} yrs mandatory threshold forces immediate disqualification."
-    elif results["AI Solution Testing"][0] == "Missing" and results["Agentic AI"][0] == "Missing":
-        final_score = min(final_score, 59.0)
-        verdict = "Screening Failed · Weak fit (AI Hard Gap) ❌"
-        override_note = "Rule #3: Total absence of AI & Agentic testing forces score cap < 60 and downgrade to Weak fit."
-    elif final_score >= 80.0:
-        verdict = "Screening Passed · Strong fit ✅"
+    # Core Language Gate
+    has_js = "Matched" in mandatory_results.get("JavaScript / TypeScript", ("Missing",))[0] or "Matched" in mandatory_results.get("Python", ("Missing",))[0]
+    if not has_js and "JavaScript / TypeScript" in mandatory_weights:
+        final_score = min(final_score, 45.0)
+        verdict = "Weak Fit (Core Language Missing) - Rejected"
+        override_note = "Rule #2 Override: Neither core JavaScript/TypeScript nor Python was evidenced in project deliverables."
+        return {
+            "name": name,
+            "years_exp": exp_years,
+            "mandatory": mandatory_results,
+            "good_to_have": good_results,
+            "mandatory_score": round(mandatory_score, 1),
+            "good_score": round(good_score, 1),
+            "exp_score": round(exp_score, 1),
+            "raw_score": round(raw_score, 1),
+            "final_score": round(final_score, 1),
+            "verdict": verdict,
+            "override_note": override_note
+        }
+
+    # AI Hard Gap Rule #3
+    ai_status = mandatory_results.get("AI Solution Testing", ("Missing",))[0]
+    agentic_status = mandatory_results.get("Agentic AI", ("Missing",))[0]
+    if ai_status == "Missing" and agentic_status == "Missing":
+        if final_score >= 60.0:
+            final_score = 59.0
+        verdict = "Weak Fit (AI Testing & Agentic AI Gap) - Hard Fail"
+        override_note = "Rule #3 Override: Both AI Solution Testing and Agentic AI are completely missing; score capped < 60."
+        return {
+            "name": name,
+            "years_exp": exp_years,
+            "mandatory": mandatory_results,
+            "good_to_have": good_results,
+            "mandatory_score": round(mandatory_score, 1),
+            "good_score": round(good_score, 1),
+            "exp_score": round(exp_score, 1),
+            "raw_score": round(raw_score, 1),
+            "final_score": round(final_score, 1),
+            "verdict": verdict,
+            "override_note": override_note
+        }
+
+    if final_score >= 80.0:
+        verdict = "Strong Fit - Recommended for Interview"
+        override_note = "All mandatory requirements verified with concrete deliverables."
     elif final_score >= 60.0:
-        verdict = "Screening Passed · Potential fit ⚠️"
+        verdict = "Potential Fit (Interview with targeted probes)"
+        override_note = "Core skills evidenced; requires probing on claimed items or partial gaps."
     elif final_score >= 40.0:
-        verdict = "Screening Failed · Weak fit ❌"
+        verdict = "Weak Fit - Secondary Pool"
+        override_note = "Multiple mandatory gaps identified."
     else:
-        verdict = "Screening Failed · Reject ❌"
+        verdict = "Reject - Failed Initial Screen"
+        override_note = "Significant qualification shortfalls."
 
     return {
-        "name": candidate_name,
-        "years_exp": round(years_exp, 1) if years_exp else "N/A",
+        "name": name,
+        "years_exp": exp_years,
+        "mandatory": mandatory_results,
+        "good_to_have": good_results,
+        "mandatory_score": round(mandatory_score, 1),
+        "good_score": round(good_score, 1),
+        "exp_score": round(exp_score, 1),
         "raw_score": round(raw_score, 1),
         "final_score": round(final_score, 1),
         "verdict": verdict,
-        "override_note": override_note,
-        "mandatory": results,
-        "good_to_have": good_to_have_results,
-        "mandatory_score": round(mandatory_score, 1),
-        "good_score": round(good_to_have_score, 1),
-        "exp_score": round(exp_fit_score, 1)
+        "override_note": override_note
     }
 
-def generate_report_files(timestamp_folder: str, candidate_results: list, file_names: list, jd_name: str):
-    date_str = datetime.date.today().strftime("%Y-%m-%d")
-    report_sub = REPORTS_DIR / timestamp_folder
+# FPDF2 Class for Vector Audit Report PDF
+if FPDF:
+    class ScreenerPDF(FPDF):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.set_auto_page_break(auto=True, margin=15)
+
+        def header(self):
+            self.set_fill_color(15, 23, 42)
+            self.rect(0, 0, 210, 14, "F")
+            self.set_xy(10, 2.5)
+            self.set_font("Helvetica", "B", 9)
+            self.set_text_color(248, 250, 252)
+            self.cell(0, 8, "AI CANDIDATE SCREENER  |  EVIDENCE-DRIVEN ATS AUDIT REPORT")
+            self.ln(14)
+
+        def footer(self):
+            self.set_y(-12)
+            self.set_font("Helvetica", size=8)
+            self.set_text_color(148, 163, 184)
+            self.cell(0, 10, f"Page {self.page_no()}/{{nb}}", align="C")
+
+def sanitize(text: str) -> str:
+    if not text:
+        return ""
+    replacements = {
+        "—": " - ", "–": "-", "→": " -> ", "•": "*",
+        "⚠️": " [!]", "🚀": " [*]", "❌": " [X]", "✅": " [OK]",
+        "“": '"', "”": '"', "‘": "'", "’": "'",
+        "≥": ">=", "≤": "<=", "&rarr;": " -> ", "&nbsp;": " ",
+        "&amp;": "&", "&lt;": "<", "&gt;": ">"
+    }
+    for k, v in replacements.items():
+        text = text.replace(k, v)
+    return text.encode("ascii", "replace").decode("ascii")
+
+def build_pdf_report(date_str: str, candidate_results: list, file_names: list, active_jd_display: str) -> bytes:
+    if not FPDF:
+        return b""
+    pdf = ScreenerPDF(orientation="P", unit="mm", format="A4")
+    pdf.alias_nb_pages()
+    pdf.add_page()
+
+    # Title & Metadata
+    pdf.set_font("Helvetica", "B", 16)
+    pdf.set_text_color(15, 23, 42)
+    pdf.cell(0, 8, f"Candidate Screening Audit Report - {sanitize(date_str)}")
+    pdf.ln(8)
+
+    pdf.set_fill_color(241, 245, 249)
+    pdf.set_draw_color(203, 213, 225)
+    pdf.rect(10, pdf.get_y(), 190, 20, "DF")
+    pdf.set_xy(12, pdf.get_y() + 2)
+    pdf.set_font("Helvetica", "B", 8.5)
+    pdf.set_text_color(71, 85, 105)
+    pdf.cell(0, 5, f"Screened Files: {sanitize(', '.join(file_names))}")
+    pdf.ln(5)
+    pdf.set_x(12)
+    pdf.cell(0, 5, f"Active JD: {sanitize(active_jd_display)}")
+    pdf.ln(5)
+    pdf.set_x(12)
+    pdf.cell(0, 5, f"Candidates Ranked: {len(candidate_results)}")
+    pdf.ln(10)
+
+    # 1) Ranking Leaderboard
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(30, 58, 138)
+    pdf.cell(0, 7, "1) Candidate Ranking Leaderboard")
+    pdf.ln(6)
+
+    # Table Header
+    col_w = [10, 42, 26, 38, 22, 52]
+    headers = ["#", "Candidate", "Score", "Verdict", "Exp", "Missing Mandatory"]
+    pdf.set_fill_color(30, 41, 59)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Helvetica", "B", 8)
+    for w, h in zip(col_w, headers):
+        pdf.cell(w, 6, h, border=1, fill=True)
+    pdf.ln(6)
+
+    pdf.set_text_color(30, 41, 59)
+    pdf.set_font("Helvetica", size=7.5)
+    for idx, c in enumerate(candidate_results, 1):
+        missing_m = [k for k, v in c.get("mandatory", {}).items() if v[0] == "Missing"]
+        missing_str = ", ".join(missing_m[:2]) + ("..." if len(missing_m) > 2 else "") if missing_m else "None"
+        
+        pdf.cell(col_w[0], 6, str(idx), border=1)
+        pdf.cell(col_w[1], 6, sanitize(c["name"][:22]), border=1)
+        pdf.set_font("Helvetica", "B", 7.5)
+        pdf.cell(col_w[2], 6, f"{c['final_score']}/100", border=1)
+        pdf.set_font("Helvetica", size=7.5)
+        pdf.cell(col_w[3], 6, sanitize(c["verdict"][:20]), border=1)
+        pdf.cell(col_w[4], 6, f"{c['years_exp']} yrs", border=1)
+        pdf.cell(col_w[5], 6, sanitize(missing_str[:28]), border=1)
+        pdf.ln(6)
+
+    pdf.ln(4)
+
+    # Key Takeaways
+    pdf.set_fill_color(254, 243, 199)
+    pdf.set_draw_color(245, 158, 11)
+    takeaway_h = 8 + (len(candidate_results) * 5.5)
+    pdf.rect(10, pdf.get_y(), 190, takeaway_h, "DF")
+    pdf.set_xy(12, pdf.get_y() + 2)
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.set_text_color(146, 64, 14)
+    pdf.cell(0, 5, "Key Takeaway & Override Decisions:")
+    pdf.ln(5)
+    pdf.set_font("Helvetica", size=8)
+    for c in candidate_results:
+        pdf.set_x(12)
+        pdf.cell(0, 5, sanitize(f"* {c['name']}: {c['verdict']} - {c['override_note']}"))
+        pdf.ln(5)
+
+    pdf.ln(8)
+
+    # 2) Gap Matrix
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(30, 58, 138)
+    pdf.cell(0, 7, "2) 4-Tier Evidence Gap Matrix")
+    pdf.ln(6)
+
+    for c in candidate_results:
+        pdf.set_fill_color(224, 231, 255)
+        pdf.set_text_color(30, 27, 75)
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(190, 6, f"Candidate: {sanitize(c['name'])}  |  Score: {c['final_score']}/100  |  {sanitize(c['verdict'])}", border=1, fill=True)
+        pdf.ln(6)
+
+        # Gap Table Header
+        gw = [42, 50, 20, 26, 52]
+        gh = ["Skill / Area", "Expectation", "Type", "Status", "Evidence"]
+        pdf.set_fill_color(241, 245, 249)
+        pdf.set_text_color(71, 85, 105)
+        pdf.set_font("Helvetica", "B", 7.5)
+        for w, h in zip(gw, gh):
+            pdf.cell(w, 5, h, border=1, fill=True)
+        pdf.ln(5)
+
+        pdf.set_font("Helvetica", size=7)
+        pdf.set_text_color(30, 41, 59)
+        
+        all_skills = list(c.get("mandatory", {}).items()) + list(c.get("good_to_have", {}).items())
+        for k, v in all_skills:
+            req_type = "Mandatory" if k in c.get("mandatory", {}) else "Good-to-have"
+            status_text = v[0]
+            evidence_text = v[1] if len(v) > 1 else ""
+            
+            pdf.cell(gw[0], 5, sanitize(k[:24]), border=1)
+            pdf.cell(gw[1], 5, sanitize(k[:28]), border=1)
+            pdf.cell(gw[2], 5, req_type, border=1)
+            pdf.cell(gw[3], 5, sanitize(status_text[:14]), border=1)
+            pdf.cell(gw[4], 5, sanitize(evidence_text[:30]), border=1)
+            pdf.ln(5)
+
+        pdf.ln(4)
+
+    # 3) Candidate Details
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(30, 58, 138)
+    pdf.cell(0, 7, "3) Detailed Candidate Arithmetic & Verdicts")
+    pdf.ln(6)
+
+    for idx, c in enumerate(candidate_results, 1):
+        pdf.set_font("Helvetica", "B", 9.5)
+        pdf.set_text_color(15, 23, 42)
+        pdf.cell(0, 5, f"{idx}. {sanitize(c['name'])} - {sanitize(c['verdict'])}")
+        pdf.ln(5)
+        pdf.set_font("Helvetica", size=8)
+        pdf.set_text_color(51, 65, 85)
+        pdf.cell(0, 4.5, f"Total Experience: {c['years_exp']} yrs  |  Final Score: {c['final_score']} / 100")
+        pdf.ln(4.5)
+        pdf.cell(0, 4.5, f"Score Breakdown: Mandatory {c['mandatory_score']}/85, Bonus {c['good_score']}/10, Exp Fit {c['exp_score']}/5 -> Raw: {c['raw_score']}/100")
+        pdf.ln(4.5)
+        pdf.cell(0, 4.5, f"Override Decision: {sanitize(c['override_note'])}")
+        pdf.ln(6)
+
+    return bytes(pdf.output())
+
+def generate_report_files(timestamp: str, candidate_results: list, file_names: list, active_jd_display: str):
+    report_sub = REPORTS_DIR / timestamp
     report_sub.mkdir(parents=True, exist_ok=True)
-    files_str = ", ".join(file_names) if file_names else f"{len(candidate_results)} candidate profile(s)"
-    active_jd_display = jd_name if jd_name else "references/job-description.md (Default SDET 6–10 Yrs)"
+    date_str = timestamp.split("_")[0]
+    files_str = ", ".join(file_names)
 
     # Markdown
     md_lines = [
-        f"# Screening Report — {date_str}",
-        f"**Screened Files:** {files_str}  ",
-        f"**Active JD:** {active_jd_display}  ",
-        f"**Candidates Ranked:** {len(candidate_results)}",
+        f"# Candidate Screening Audit Report — {date_str}",
+        "",
+        f"- **Screened Files:** {files_str}",
+        f"- **Active JD:** {active_jd_display}",
+        f"- **Candidates Ranked:** {len(candidate_results)}",
         "",
         "---",
         "",
@@ -430,9 +662,11 @@ def generate_report_files(timestamp_folder: str, candidate_results: list, file_n
     html_path = report_sub / f"candidate_screening_report_{date_str}.html"
     html_path.write_text(html_content, encoding="utf-8")
 
-    # PDF Render (Headless Browser or FPDF fallback)
+    # PDF Generation (Guaranteed Vector PDF + Browser fallback)
     pdf_path = report_sub / f"candidate_screening_report_{date_str}.pdf"
-    rendered = False
+    pdf_bytes = build_pdf_report(date_str, candidate_results, file_names, active_jd_display)
+    
+    # Try high-fidelity headless browser print if available
     browser_bins = [
         os.environ.get("CHROME_BIN"),
         r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -446,30 +680,16 @@ def generate_report_files(timestamp_folder: str, candidate_results: list, file_n
         try:
             cmd = f'"{browser_path}" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="{pdf_path}" "file:///{html_path}"'
             subprocess.run(cmd, shell=True, capture_output=True)
-            rendered = pdf_path.exists() and pdf_path.stat().st_size > 0
-        except Exception:
-            rendered = False
-
-    if not rendered and FPDF:
-        try:
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Helvetica", "B", 14)
-            pdf.cell(0, 10, f"Screening Report - {date_str}", ln=True)
-            pdf.set_font("Helvetica", size=10)
-            pdf.cell(0, 8, f"Active JD: {active_jd_display}", ln=True)
-            pdf.ln(5)
-            for idx, c in enumerate(candidate_results, 1):
-                pdf.set_font("Helvetica", "B", 11)
-                pdf.cell(0, 8, f"{idx}. {c['name']} - Score: {c['final_score']}/100 - {c['verdict']}", ln=True)
-                pdf.set_font("Helvetica", size=9)
-                pdf.multi_cell(0, 6, f"Experience: {c['years_exp']} yrs | Note: {c['override_note']}")
-                pdf.ln(3)
-            pdf.output(str(pdf_path))
+            if pdf_path.exists() and pdf_path.stat().st_size > 0:
+                pdf_bytes = pdf_path.read_bytes()
         except Exception:
             pass
 
-    return md_content, html_content, pdf_path
+    # Ensure PDF file is written
+    if pdf_bytes:
+        pdf_path.write_bytes(pdf_bytes)
+
+    return md_content, html_content, pdf_bytes, pdf_path
 
 # ================= UI LAYOUT =================
 st.markdown('<div class="main-header">🎯 AI Candidate Screener Portal</div>', unsafe_allow_html=True)
@@ -531,13 +751,14 @@ if st.button("🚀 Screen Candidate Profiles", type="primary", use_container_wid
             file_names.append(r_file.name)
 
         candidate_results.sort(key=lambda x: x["final_score"], reverse=True)
-        md_content, html_content, pdf_path = generate_report_files(timestamp, candidate_results, file_names, jd_display_name)
+        md_content, html_content, pdf_bytes, pdf_path = generate_report_files(timestamp, candidate_results, file_names, jd_display_name)
 
         st.session_state["results"] = candidate_results
         st.session_state["active_jd"] = jd_display_name
         st.session_state["md_content"] = md_content
         st.session_state["html_content"] = html_content
-        st.session_state["pdf_path"] = str(pdf_path) if pdf_path.exists() else None
+        st.session_state["pdf_bytes"] = pdf_bytes
+        st.session_state["pdf_path"] = str(pdf_path)
 
 if "results" in st.session_state:
     results = st.session_state["results"]
@@ -582,11 +803,12 @@ if "results" in st.session_state:
     # Export Section
     st.subheader("📥 Export & Download Audit Reports")
     d_col1, d_col2, d_col3 = st.columns(3)
+    today_str = datetime.date.today().strftime('%Y-%m-%d')
     with d_col1:
         st.download_button(
             label="📝 Download Markdown Report",
             data=st.session_state["md_content"],
-            file_name=f"screening_report_{datetime.date.today().strftime('%Y-%m-%d')}.md",
+            file_name=f"candidate_screening_report_{today_str}.md",
             mime="text/markdown",
             use_container_width=True
         )
@@ -594,19 +816,27 @@ if "results" in st.session_state:
         st.download_button(
             label="🌐 Download HTML Twin",
             data=st.session_state["html_content"],
-            file_name=f"screening_report_{datetime.date.today().strftime('%Y-%m-%d')}.html",
+            file_name=f"candidate_screening_report_{today_str}.html",
             mime="text/html",
             use_container_width=True
         )
     with d_col3:
-        if st.session_state.get("pdf_path") and os.path.exists(st.session_state["pdf_path"]):
+        if st.session_state.get("pdf_bytes"):
+            st.download_button(
+                label="📄 Download Audit PDF Report",
+                data=st.session_state["pdf_bytes"],
+                file_name=f"candidate_screening_report_{today_str}.pdf",
+                mime="application/pdf",
+                use_container_width=True
+            )
+        elif st.session_state.get("pdf_path") and os.path.exists(st.session_state["pdf_path"]):
             with open(st.session_state["pdf_path"], "rb") as f:
                 st.download_button(
-                    label="📄 Download Rendered PDF",
+                    label="📄 Download Audit PDF Report",
                     data=f.read(),
-                    file_name=f"screening_report_{datetime.date.today().strftime('%Y-%m-%d')}.pdf",
+                    file_name=f"candidate_screening_report_{today_str}.pdf",
                     mime="application/pdf",
                     use_container_width=True
                 )
         else:
-            st.button("📄 PDF Rendering Unavailable", disabled=True, use_container_width=True)
+            st.button("📄 PDF Rendering in Progress", disabled=True, use_container_width=True)

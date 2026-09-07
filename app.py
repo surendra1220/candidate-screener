@@ -14,6 +14,11 @@ try:
 except ImportError:
     docx = None
 
+try:
+    from fpdf import FPDF
+except ImportError:
+    FPDF = None
+
 PORT = int(os.environ.get("PORT", 8080))
 BASE_DIR = pathlib.Path(__file__).parent.resolve()
 RESUMES_DIR = BASE_DIR / "Resumes"
@@ -408,6 +413,7 @@ def generate_reports(timestamp_folder: str, candidate_results: list, file_names:
 
     # PDF Render
     pdf_path = report_sub / f"candidate_screening_report_{date_str}.pdf"
+    rendered = False
     browser_bins = [
         os.environ.get("CHROME_BIN"),
         r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -418,8 +424,84 @@ def generate_reports(timestamp_folder: str, candidate_results: list, file_names:
     ]
     browser_path = next((b for b in browser_bins if b and os.path.exists(b)), None)
     if browser_path:
-        cmd = f'"{browser_path}" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="{pdf_path}" "file:///{html_path}"'
-        subprocess.run(cmd, shell=True, capture_output=True)
+        try:
+            cmd = f'"{browser_path}" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="{pdf_path}" "file:///{html_path}"'
+            subprocess.run(cmd, shell=True, capture_output=True)
+            rendered = pdf_path.exists() and pdf_path.stat().st_size > 0
+        except Exception:
+            rendered = False
+
+    if not rendered and FPDF:
+        try:
+            class LocalScreenerPDF(FPDF):
+                def header(self):
+                    self.set_fill_color(15, 23, 42)
+                    self.rect(0, 0, 210, 14, "F")
+                    self.set_xy(10, 2.5)
+                    self.set_font("Helvetica", "B", 9)
+                    self.set_text_color(248, 250, 252)
+                    self.cell(0, 8, "AI CANDIDATE SCREENER  |  EVIDENCE-DRIVEN ATS AUDIT REPORT")
+                    self.ln(14)
+                def footer(self):
+                    self.set_y(-12)
+                    self.set_font("Helvetica", size=8)
+                    self.set_text_color(148, 163, 184)
+                    self.cell(0, 10, f"Page {self.page_no()}/{{nb}}", align="C")
+
+            def local_sanitize(txt):
+                if not txt: return ""
+                reps = {"—": " - ", "–": "-", "→": " -> ", "•": "*", "⚠️": " [!]", "🚀": " [*]", "❌": " [X]", "✅": " [OK]", "&rarr;": " -> ", "&nbsp;": " "}
+                for k, v in reps.items(): txt = txt.replace(k, v)
+                return txt.encode("ascii", "replace").decode("ascii")
+
+            pdf = LocalScreenerPDF(orientation="P", unit="mm", format="A4")
+            pdf.alias_nb_pages()
+            pdf.add_page()
+            pdf.set_font("Helvetica", "B", 16)
+            pdf.set_text_color(15, 23, 42)
+            pdf.cell(0, 8, f"Candidate Screening Audit Report - {local_sanitize(date_str)}")
+            pdf.ln(8)
+            pdf.set_fill_color(241, 245, 249)
+            pdf.rect(10, pdf.get_y(), 190, 18, "DF")
+            pdf.set_xy(12, pdf.get_y() + 2)
+            pdf.set_font("Helvetica", "B", 8.5)
+            pdf.set_text_color(71, 85, 105)
+            pdf.cell(0, 5, f"Screened Files: {local_sanitize(files_str)}")
+            pdf.ln(5)
+            pdf.set_x(12)
+            pdf.cell(0, 5, f"Active JD: {local_sanitize(active_jd_display)}")
+            pdf.ln(8)
+
+            # Ranking
+            pdf.set_font("Helvetica", "B", 12)
+            pdf.set_text_color(30, 58, 138)
+            pdf.cell(0, 7, "1) Ranking Leaderboard")
+            pdf.ln(6)
+            col_w = [10, 45, 25, 40, 20, 50]
+            headers = ["#", "Candidate", "Score", "Verdict", "Exp", "Missing Mandatory"]
+            pdf.set_fill_color(30, 41, 59)
+            pdf.set_text_color(255, 255, 255)
+            pdf.set_font("Helvetica", "B", 8)
+            for w, h in zip(col_w, headers): pdf.cell(w, 6, h, border=1, fill=True)
+            pdf.ln(6)
+            pdf.set_text_color(30, 41, 59)
+            pdf.set_font("Helvetica", size=7.5)
+            for idx, c in enumerate(candidate_results, 1):
+                missing_m = [k for k, v in c.get("mandatory", {}).items() if v[0] == "Missing"]
+                missing_str = ", ".join(missing_m[:2]) if missing_m else "None"
+                pdf.cell(col_w[0], 6, str(idx), border=1)
+                pdf.cell(col_w[1], 6, local_sanitize(c["name"][:24]), border=1)
+                pdf.set_font("Helvetica", "B", 7.5)
+                pdf.cell(col_w[2], 6, f"{c['final_score']}/100", border=1)
+                pdf.set_font("Helvetica", size=7.5)
+                pdf.cell(col_w[3], 6, local_sanitize(c["verdict"][:20]), border=1)
+                pdf.cell(col_w[4], 6, f"{c['years_exp']} yrs", border=1)
+                pdf.cell(col_w[5], 6, local_sanitize(missing_str[:26]), border=1)
+                pdf.ln(6)
+
+            pdf.output(str(pdf_path))
+        except Exception:
+            pass
 
     return md_path, html_path, pdf_path
 
