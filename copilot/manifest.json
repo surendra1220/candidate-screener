@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.17",
+  "version": "1.0.0",
+  "id": "c8b1a3d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+  "packageName": "com.company.candidatescreener",
+  "developer": {
+    "name": "Engineering Recruitment QA",
+    "websiteUrl": "https://example.com",
+    "privacyUrl": "https://example.com/privacy",
+    "termsOfUseUrl": "https://example.com/terms"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "CandidateScreener",
+    "full": "Candidate Screener AI Agent"
+  },
+  "description": {
+    "short": "Evidence-driven candidate screening agent for SDET and Technical roles.",
+    "full": "Autonomous ATS agent that verifies resume deliverables against Job Descriptions using strict mathematical capacity rubrics."
+  },
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "candidateScreenerAgent",
+        "file": "declarativeAgent.json"
+      }
+    ]
+  }
+}

@@ -1,0 +1,157 @@
+================ FILE: Naukri_SHUSHILKOPPU[5y_2m].pdf ================
+--- PAGE 1 ---
+SHUSHIL KUMAR KOPPU 
+Senior QA Automation Engineer & SDET (5.3 Years Experience) 
+Mobile: +91-9701406311 | Email: shushilkoppu27@gmail.com 
+ 
+PROFESSIONAL SUMMARY 
+ 
+Senior QA Automation Engineer & SDET with 5.3 years of progressive IT experience architecting, developing, and deploying enterprise-grade test 
+automation frameworks across Healthcare Management Systems, Clinical Trial Research, and Patient Diagnostic platforms. Proven technical 
+leadership in spearheading a strategic framework migration from Selenium Java to modern Playwright with JavaScript (Node.js, NPM, Custom 
+Fixtures, POM) over the past 1.5 years on enterprise Healthcare Management platforms, boosting regression execution speed by 45% and eliminating 
+browser synchronization wait issues. Deep expertise in testing backend microservices architectures, RESTful API automation us ing Postman & Rest 
+Assured, and database integrity validation leveraging MySQL and Oracle SQL. Adept at governing the full STLC and SDLC within fast-paced Agile 
+Scrum frameworks (2-week sprint cycles, 3-month release cadence)—leading requirement grooming, Jenkins CI/CD pipeline automation, cross-
+device mobile validation (Android/iOS), client stakeholder demos, UAT sign-offs, and Level-3 (L3) production support. Early adopter of AI productivity 
+tools (GitHub Copilot, Cursor AI) to accelerate test creation, optimize scripts, and ensure zero defect slippage. 
+TECHNICAL SKILLS 
+ 
+Test Automation Frameworks: 
+Playwright (JavaScript), Selenium WebDriver (Java), Cucumber (BDD), TestNG, Page Object Model (POM), Page 
+Factory, Custom Fixtures, Data-Driven & Hybrid Framework Architecture, Cross-Browser Testing 
+Node.js & Scripting Ecosystem: 
+JavaScript (ES6+), Node.js, NPM (Node Package Manager), Custom Fixtures, Async/Await Handling, Auto-
+Waiting, Dynamic Selectors (XPath/CSS) 
+Programming Languages: 
+Core Java, JavaScript, SQL, HTML5, CSS3, JSON, XML 
+API & Backend Testing: 
+Rest Assured (Java), Postman (Manual & Automated API Testing), RESTful Web Services, Microservices 
+Architecture, Swagger/OpenAPI, JSON Schema & Status Code Verification 
+CI/CD & DevOps Tools: 
+Jenkins CI/CD Pipelines, Maven, Git, GitHub (Branching & Version Control), Extent Reports, Allure Reports 
+Databases & Querying: 
+MySQL, Oracle SQL (Complex SQL Queries, Subqueries, Joins, Stored Procedures, Healthcare Records Auditing 
+& Backend Data Integrity Validation) 
+Test Management & Tools: 
+JIRA, HP ALM, qTest, Requirements Traceability Matrix (RTM), Defect Lifecycle Management, Quality Metrics & 
+Test Summary Reports 
+Mobile & Platform Testing: 
+Mobile Testing (Android & iOS Manual Frameworks), Device Compatibility, Responsive UI, Web & Client-Server 
+Architectures 
+AI-Assisted QA Tools: 
+GitHub Copilot, Cursor AI (AI-Assisted Test Script Optimization, Code Generation & Locator Maintenance) 
+Methodologies & Leadership: 
+Agile Scrum (2-Week Sprints, 3-Month Release Cadence), Full STLC & SDLC, Sprint Planning, Client Demos, 
+Production Deployment, L3 Support, RCA 
+COMPANIES & EMPLOYMENT HISTORY 
+ 
+ 
+Company Name 
+Designation / Role 
+Employment Type & Status 
+Duration 
+Primus Global Technologies 
+Software Test Engineer 
+Full-time 
+Dec 2024 – Present 
+Ness Digital Engineering 
+Software Test Engineer (QA Automation) 
+Full-time 
+July 2021 – Nov 2024 
+ 
+PROJECT EXPERIENCE & DETAILED CONTRIBUTIONS 
+Project 1: Healthcare Management System (HMS) & Patient Diagnostic Portal | Employer: 
+Primus Global 
+ 
+ 
+Role: QA Automation Lead | Team Size: 6 
+ 
+ 
+• Analyzed complex healthcare business requirement specifications (BRS), HIPAA compliance rules, and user stories in 2-week Agile sprint cycles, 
+constructing comprehensive test plans and Requirements Traceability Matrices (RTM). 
+• Spearheaded the strategic test automation framework migration from Selenium Java to Playwright with JavaScript (Node.js, NPM, Fixtures) over the 
+past 1.5 years, cutting regression runtimes by 45% and eliminating browser synchronization wait issues. 
+• Architected and scaled a modular Page Object Model (POM) Playwright framework utilizing custom fixtures, async/await handles, and auto-waiting 
+mechanisms for seamless cross-browser execution across Chromium, Firefox, and WebKit. 
+• Automated critical end-to-end healthcare workflows: Patient Profile Registration → Insurance Entitlement Verification → Physician Appointment 
+Scheduling → Electronic Prescription Dispatch → Diagnostic Lab Bill Generation. 
+• Engineered and automated end-to-end integration test scenarios verifying that patient diagnostic orders and billing states synchronize accurately across 
+decoupled hospital microservices. 
+• Conducted automated API microservices testing using Rest Assured and Postman, validating RESTful endpoints, OAuth/JWT bearer tokens, JSON 
+payload schemas, and HTTP status codes. 
+• Executed comprehensive backend database testing against MySQL and Oracle SQL, writing complex queries (joins, subqueries, aggregations) to verify 
+patient record updates, prescription logs, and medical billing ledgers. 
+• Managed and maintained dedicated test datasets within a test data management system to support large-scale automated execution and realistic clinical 
+data simulations. 
+• Wired automated Playwright and API regression suites directly into Jenkins CI/CD pipelines, establishing automated quality gates for pull requests and 
+nightly continuous testing runs. 
+Domain & Agile Model: Healthcare Management Systems (HMS) & Telehealth | Agile Scrum (2-Week Sprints, 3-Month Major Release Cadence) 
+Tools & Tech Stack: Playwright (JavaScript), Node.js, NPM, Fixtures, Selenium WebDriver, Java, Cucumber BDD, TestNG, Rest Assured, Postman, 
+MySQL, Oracle SQL, Jenkins, Git, JIRA, GitHub Copilot, Cursor AI. 
+Detailed Project Description, Business Purpose & Real-World Use Case: The Healthcare Management System (HMS) is a mission-critical, HIPAA-
+compliant enterprise web and mobile platform engineered to manage hospital administrative workflows, patient Electronic Health Records (EHR), physician 
+appointment scheduling, automated diagnostic lab report dispatch, and medical insurance billing calculations. From a clinical staff and patient perspective, 
+the workflow initiates when a patient registers online; the system validates insurance coverage entitlements, schedules specialized consultations, updates 
+digital prescription orders, and synchronizes real-time diagnostic results across hospital departments. The primary QA agenda focused on leading a 
+strategic automation migration from legacy Selenium Java to Playwright JavaScript over the past 1.5 years, accelerating regression execution speed by 45%, 
+verifying RESTful microservices, ensuring strict data security, and guaranteeing zero defect slippage in critical patient workflows. 
+
+--- PAGE 2 ---
+• Leveraged AI-assisted development tools including GitHub Copilot and Cursor AI to accelerate test script authoring, optimize dynamic XPath/CSS 
+locators, and refactor framework utilities. 
+• Managed the end-to-end defect lifecycle in JIRA and qTest, capturing detailed replication logs, driving defect triage meetings with developers, and 
+conducting Root Cause Analysis (RCA). 
+• Led a QA team of 5 engineers, assigning sprint deliverables, conducting code reviews for automation pull requests, and establishing standardized 
+framework coding guidelines. 
+• Interfaced directly with client stakeholders, healthcare business analysts, and Product Owners during sprint review meetings to deliver automated 
+functional demonstration walk-throughs. 
+• Coordinated User Acceptance Testing (UAT) sessions with clinical administrative teams, providing test data provisioning and rapid issue triaging. 
+• Executed pre-deployment build smoke verifications and post-deployment sanity validations during scheduled 3-month production release maintenance 
+windows, providing dedicated L3 production support. 
+Project 2: Clinical Trials Research & Patient Randomization Platform | Employer: Ness 
+Digital Engineering 
+Role: Software Test Engineer (QA 
+Automation) | Team Size: 5 
+ 
+ 
+• Analyzed clinical study protocol documents, FDA regulatory guidelines, and functional specifications to design comprehensive test plans, scenarios, and 
+execution matrices. 
+• Designed, built, and maintained a modular Hybrid Test Automation Framework using Selenium WebDriver with Core Java, TestNG, and Cucumber 
+BDD utilizing Page Object Model (POM) architecture. 
+• Engineered custom explicit wait wrappers, reusable web element utility classes, and localized assertion components in Java to eliminate automation 
+execution flakiness. 
+• Executed comprehensive manual and automated functional, integration, smoke, sanity, positive/negative boundary value, and regression testing across 
+2-week sprint cycles. 
+• Automated and validated core clinical research workflows: Subject Cohort Enrollment → Stratified Randomization → Treatment Arm Assignment → Drug 
+Kit Dispensation → Subject Visit Completion. 
+• Validated protocol-specific configurations, cohort eligibility constraints, and dosing schedules to ensure strict adherence to clinical trial protocols. 
+• Conducted backend REST API validation using Postman and Rest Assured, parsing JSON/XML payloads to verify drug inventory updates and patient 
+visit milestone data. 
+• Performed deep database testing on MySQL, authoring complex SQL queries to validate patient visit schedules, dispensation audit trails, and inventory 
+balance logs. 
+• Integrated Selenium automated regression suites into Jenkins CI/CD pipelines, facilitating automated nightly build regression executions and real-time 
+email alerts. 
+• Logged, documented, and tracked software bugs through complete resolution cycles using JIRA and HP ALM, actively participating in weekly defect 
+triage meetings. 
+• Conducted cross-browser compatibility testing across Google Chrome, Mozilla Firefox, and Microsoft Edge to ensure uniform rendering of clinical 
+investigator portals. 
+• Performed cross-platform manual mobile testing across Android and iOS devices to validate investigator tablet application responsiveness and offline 
+data caching. 
+• Created and maintained dynamic test data sets simulating multi-tiered clinical cohorts, stratified patient demographics, and site inventory quotas. 
+• Assisted business stakeholders during User Acceptance Testing (UAT), providing audit-ready test evidence and verification documentation. 
+• Executed deployment smoke tests during scheduled 3-month production cutover windows and delivered post-production L3 support for live trial 
+discrepancy tickets. 
+EDUCATIONAL QUALIFICATION 
+ 
+Bachelor of Science (B.Sc in Computer Science) – Satavahana University, Karimnagar 
+Graduated: 2021 
+Domain & Agile Model: Clinical Trial Research & Life Sciences | Agile Scrum (2-Week Sprints, 3-Month Major Release Cadence) 
+Tools & Tech Stack: Selenium WebDriver, Core Java, TestNG, Cucumber BDD, Maven, Postman, Rest Assured, MySQL, Oracle SQL, Jenkins, Git, JIRA, 
+HP ALM. 
+Detailed Project Description, Business Purpose & Real-World Use Case: The Clinical Trials Research Platform is a validated clinical trial management 
+system engineered to automate patient cohort screening, stratified double-blind randomization algorithms, clinical drug supply dispensation, and regulatory 
+protocol compliance tracking across global pharmaceutical study sites. From an investigator and clinical trial coordinator perspective, the application 
+enforces strict study protocols, monitors patient visit schedules, tracks temperature-sensitive drug shipments, and generates automated audit trails adhering 
+to FDA 21 CFR Part 11 and ICH GCP regulatory standards. The testing agenda focused on developing robust Selenium Java automated regression suites, 
+verifying RESTful APIs, validating backend clinical database state consistency in MySQL, and ensuring zero defect leakage to live research trials. 

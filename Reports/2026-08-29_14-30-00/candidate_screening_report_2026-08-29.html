@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Candidate Screening Report — SDET</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 14mm 14mm 14mm 14mm;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.5;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+  }
+  h1 {
+    font-size: 20px;
+    color: #0f172a;
+    border-bottom: 2px solid #3b82f6;
+    padding-bottom: 6px;
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 14px;
+  }
+  h2 {
+    font-size: 14.5px;
+    color: #1e3a8a;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 13px;
+    color: #0f172a;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    page-break-after: avoid;
+  }
+  .candidate-heading {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e1b4b;
+    background: #e0e7ff;
+    padding: 6px 10px;
+    border-left: 4px solid #4f46e5;
+    border-radius: 4px;
+    margin-top: 14px;
+    margin-bottom: 8px;
+    page-break-after: avoid;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 10.5px;
+    page-break-inside: auto;
+  }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  thead {
+    display: table-header-group;
+  }
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 5px 7px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 600;
+  }
+  .badge-pass {
+    background-color: #dcfce7;
+    color: #166534;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 10px;
+    display: inline-block;
+  }
+  .badge-fail {
+    background-color: #fee2e2;
+    color: #991b1b;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 10px;
+    display: inline-block;
+  }
+  .badge-warn {
+    background-color: #fef3c7;
+    color: #92400e;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 10px;
+    display: inline-block;
+  }
+  .status-matched {
+    color: #166534;
+    font-weight: 600;
+  }
+  .status-partial {
+    color: #b45309;
+    font-weight: 600;
+  }
+  .status-claimed {
+    color: #d97706;
+    font-weight: 600;
+  }
+  .status-missing {
+    color: #dc2626;
+    font-weight: 600;
+  }
+  .callout-warn {
+    background-color: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-size: 11px;
+  }
+  ul {
+    margin-top: 3px;
+    margin-bottom: 6px;
+    padding-left: 18px;
+  }
+  li {
+    margin-bottom: 2px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Screening Report — SDET — 29 Aug 2026</h1>
+<div class="subtitle"><strong>Screened Files:</strong> GirishJoshi_Senior_QA_Engineer_10+Yrs.docx, Naukri_Tarunkumarkillamsetty[9y_6m].pdf, Naukri_SHUSHILKOPPU[5y_2m].pdf &nbsp;|&nbsp; <strong>Active JD:</strong> references/job-description.md (SDET 6–10 Yrs) &nbsp;|&nbsp; <strong>Candidates Ranked:</strong> 3</div>
+
+<h2>1) Ranking</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 4%;">#</th>
+      <th style="width: 18%;">Candidate</th>
+      <th style="width: 12%;">Score</th>
+      <th style="width: 22%;">Verdict</th>
+      <th style="width: 10%;">Total Exp</th>
+      <th style="width: 14%;">Missing (Mandatory)</th>
+      <th style="width: 10%;">Partial</th>
+      <th style="width: 10%;">Claimed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td><strong>Girish Joshi</strong></td>
+      <td><strong>64.5 / 100</strong></td>
+      <td><span class="badge-pass">Screening Passed</span> <span class="badge-warn">Potential fit ⚠️</span></td>
+      <td>10+ yrs (15.5 yrs)</td>
+      <td>Python, Cypress, Pytest</td>
+      <td>UI/Web+BDD, AI Test, CI/CD</td>
+      <td>API Test, Agentic AI</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>Tarun Killamsetty</strong></td>
+      <td><strong>59.0 / 100</strong> <small><em>(Capped from 67)</em></small></td>
+      <td><span class="badge-fail">Screening Failed</span> <span class="badge-fail">Weak fit (AI Hard Gap) ❌</span></td>
+      <td>9.5 yrs</td>
+      <td>Python, Cypress, Pytest, AI Test, Agentic AI</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><strong>Shushil Kumar Koppu</strong></td>
+      <td><strong>0.0 / 100</strong> <small><em>(Disqualified)</em></small></td>
+      <td><span class="badge-fail">Screening Failed</span> <span class="badge-fail">Reject (Exp Gate &lt; 6y) ❌</span></td>
+      <td>5.3 yrs</td>
+      <td>Python, Cypress, Pytest, Agentic AI</td>
+      <td>AI Test</td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout-warn">
+  <strong>Key Takeaway &amp; Override Decisions:</strong><br>
+  • <strong>Girish Joshi:</strong> Highest-ranked candidate. Meets experience gate (10+ yrs), proves Playwright + JS/TS automation, 8+ yrs Life Sciences/Pharma domain (Philips, Quintiles/IQVIA), and AI Model Validation experience.<br>
+  • <strong>Tarun Killamsetty:</strong> Strong traditional SDET with 9.5 yrs Playwright &amp; Oracle CTMS experience, but triggered <strong>Rubric Rule #3 (AI-driven testing completely missing)</strong>, capping score &lt; 60 and downgrading to Weak fit / Screening Failed.<br>
+  • <strong>Shushil Kumar Koppu:</strong> Excellent Playwright JS skills but disqualified out-of-the-gate due to <strong>Experience Gate violation (5.3 yrs vs 6.0 yrs required)</strong>.
+</div>
+
+<h2>2) Gap Matrix</h2>
+
+<div class="candidate-heading">Candidate: Girish Joshi</div>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 20%;">Skill / Area</th>
+      <th style="width: 25%;">JD Expectation</th>
+      <th style="width: 12%;">Requirement</th>
+      <th style="width: 14%;">Status</th>
+      <th style="width: 29%;">Evidence (Key Line / Deliverable)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>JavaScript / TypeScript</strong></td>
+      <td>Proficient in JS/TS for building automation</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Playwright automation using JavaScript/TypeScript for Regression/E2E (Luxoft)</td>
+    </tr>
+    <tr>
+      <td><strong>Python</strong></td>
+      <td>Proficient in Python for building automation</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>Cypress</strong></td>
+      <td>Hands-on modern E2E automation tool</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>Playwright</strong></td>
+      <td>Hands-on Playwright modern framework experience</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Playwright with JS/TS (Luxoft); Playwright with Dot Net C# POM (SLK)</td>
+    </tr>
+    <tr>
+      <td><strong>Pytest</strong></td>
+      <td>Hands-on Pytest test runner &amp; fixtures</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>Framework Design (E2E)</strong></td>
+      <td>Build, scale, and maintain POM frameworks end-to-end</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Written POM framework; Building POM Framework from scratch (SLK/MFX/Quintiles)</td>
+    </tr>
+    <tr>
+      <td><strong>UI / Web Testing + BDD</strong></td>
+      <td>UI/Web testing with BDD (Cucumber / SpecFlow / MABL)</td>
+      <td>Mandatory</td>
+      <td><span class="status-partial">Partial match</span></td>
+      <td>Extensive UI/Web testing &amp; POM across multiple roles; no BDD/Cucumber evidenced</td>
+    </tr>
+    <tr>
+      <td><strong>API Testing (REST / Postman)</strong></td>
+      <td>REST APIs with Postman / Insomnia / Mocha</td>
+      <td>Mandatory</td>
+      <td><span class="status-claimed">Claimed (unevidenced)</span></td>
+      <td>Listed Postman &amp; Swagger in skills; no REST scripts in project history</td>
+    </tr>
+    <tr>
+      <td><strong>STLC &amp; Test Strategy</strong></td>
+      <td>Functional &amp; non-functional testing strategy, RTM, metrics</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Designed Test Plans, Test Scripts, RTM, defect metrics, risk-based QA</td>
+    </tr>
+    <tr>
+      <td><strong>Test Management (Jira/ALM)</strong></td>
+      <td>Hands-on Jira, HP ALM / QC, TestRail</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Azure DevOps at Luxoft; JIRA, HP ALM / QC listed and used across projects</td>
+    </tr>
+    <tr>
+      <td><strong>Agile / Kanban</strong></td>
+      <td>Agile Scrum ceremonies, sprint planning, defect triage</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Agile Scrum ceremonies, sprint planning, defect triage calls across client projects</td>
+    </tr>
+    <tr>
+      <td><strong>AI Solution Testing</strong></td>
+      <td>Experience testing AI-powered solutions / ML models</td>
+      <td>Mandatory</td>
+      <td><span class="status-partial">Partial match</span></td>
+      <td>Performed AI Model Validation testing across physical and cloud machines (Luxoft)</td>
+    </tr>
+    <tr>
+      <td><strong>Agentic AI (MCP/RAG/Prompting)</strong></td>
+      <td>Agentic AI (MCP, RAG, Prompting; test/dev solutions)</td>
+      <td>Mandatory</td>
+      <td><span class="status-claimed">Claimed (unevidenced)</span></td>
+      <td>Lists AI tools (Copilot, Claude, ChatGPT); no MCP/RAG/Agentic architecture</td>
+    </tr>
+    <tr>
+      <td><strong>AWS / Azure Cloud Exposure</strong></td>
+      <td>Cloud services relevant to test environments</td>
+      <td>Good-to-have</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Cloud environments testing (Azure, AWS) and Azure DevOps (Luxoft)</td>
+    </tr>
+    <tr>
+      <td><strong>CI/CD Integration</strong></td>
+      <td>Integrates test suites into CI/CD pipelines</td>
+      <td>Good-to-have</td>
+      <td><span class="status-partial">Partial match</span></td>
+      <td>Listed Azure DevOps / Jenkin's &amp; CI-CD Pipelines in skills table</td>
+    </tr>
+    <tr>
+      <td><strong>Pharma / Life Sciences Domain</strong></td>
+      <td>Pharma, healthcare, or clinical trial background</td>
+      <td>Good-to-have</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>8+ yrs: Philips AMD, Quintiles/IQVIA CTMS &amp; Argus Safety, GE Healthcare</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="candidate-heading">Candidate: Tarun Killamsetty</div>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 20%;">Skill / Area</th>
+      <th style="width: 25%;">JD Expectation</th>
+      <th style="width: 12%;">Requirement</th>
+      <th style="width: 14%;">Status</th>
+      <th style="width: 29%;">Evidence (Key Line / Deliverable)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>JavaScript / TypeScript</strong></td>
+      <td>Proficient in JS/TS for building automation</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Built UI automation using Playwright; JavaScript in core skills (Oracle)</td>
+    </tr>
+    <tr>
+      <td><strong>Python</strong></td>
+      <td>Proficient in Python for building automation</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>Cypress</strong></td>
+      <td>Hands-on modern E2E automation tool</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>Playwright</strong></td>
+      <td>Hands-on Playwright modern framework experience</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Worked with Playwright locators, assertions, reusable page objects, CI execution (Oracle)</td>
+    </tr>
+    <tr>
+      <td><strong>Pytest</strong></td>
+      <td>Hands-on Pytest test runner &amp; fixtures</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>Framework Design (E2E)</strong></td>
+      <td>Build, scale, and maintain POM frameworks end-to-end</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Designed and maintained reusable Page Object Model (POM) components (Oracle)</td>
+    </tr>
+    <tr>
+      <td><strong>UI / Web Testing + BDD</strong></td>
+      <td>UI/Web testing with BDD (Cucumber / SpecFlow / MABL)</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Automated end-to-end payroll workflows using Selenium with Cucumber (Paychex)</td>
+    </tr>
+    <tr>
+      <td><strong>API Testing (REST / Postman)</strong></td>
+      <td>REST APIs with Postman / Insomnia / Mocha</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Performed API Automation and validation using Rest Assured Postman &amp; SOAP UI (Oracle)</td>
+    </tr>
+    <tr>
+      <td><strong>STLC &amp; Test Strategy</strong></td>
+      <td>Functional &amp; non-functional testing strategy, RTM, metrics</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Review requirements, finalize test strategies, build regression suites, Jira logging</td>
+    </tr>
+    <tr>
+      <td><strong>Test Management (Jira/ALM)</strong></td>
+      <td>Hands-on Jira, HP ALM / QC, TestRail</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Reported defects with detailed logs in Jira; HP ALM, TFS listed in skills</td>
+    </tr>
+    <tr>
+      <td><strong>Agile / Kanban</strong></td>
+      <td>Agile Scrum ceremonies, sprint planning, defect triage</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Participated in sprint planning, Agile ceremonies, and QA mentoring (Oracle)</td>
+    </tr>
+    <tr>
+      <td><strong>AI Solution Testing</strong></td>
+      <td>Experience testing AI-powered solutions / ML models</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>Agentic AI (MCP/RAG/Prompting)</strong></td>
+      <td>Agentic AI (MCP, RAG, Prompting; test/dev solutions)</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>CI/CD Integration</strong></td>
+      <td>Integrates test suites into CI/CD pipelines</td>
+      <td>Good-to-have</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Integrated automated test suites into CI pipelines; Jenkins integration (Paychex)</td>
+    </tr>
+    <tr>
+      <td><strong>Pharma / Life Sciences Domain</strong></td>
+      <td>Pharma, healthcare, or clinical trial background</td>
+      <td>Good-to-have</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>5+ yrs on Oracle Clinical Trial Management Systems (CTMS) for pharma &amp; biotech</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="candidate-heading">Candidate: Shushil Kumar Koppu</div>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 20%;">Skill / Area</th>
+      <th style="width: 25%;">JD Expectation</th>
+      <th style="width: 12%;">Requirement</th>
+      <th style="width: 14%;">Status</th>
+      <th style="width: 29%;">Evidence (Key Line / Deliverable)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>JavaScript / TypeScript</strong></td>
+      <td>Proficient in JS/TS for building automation</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Playwright with JavaScript (Node.js, NPM, Custom Fixtures, Async/Await) at Primus</td>
+    </tr>
+    <tr>
+      <td><strong>Python / Cypress / Pytest</strong></td>
+      <td>Proficient in Python, Cypress, or Pytest</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>Playwright</strong></td>
+      <td>Hands-on Playwright modern framework experience</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Framework migration from Selenium Java to Playwright JavaScript; custom fixtures (Primus)</td>
+    </tr>
+    <tr>
+      <td><strong>Framework Design (E2E)</strong></td>
+      <td>Build, scale, and maintain POM frameworks end-to-end</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Architected modular POM Playwright framework + Selenium Java hybrid framework</td>
+    </tr>
+    <tr>
+      <td><strong>UI / Web Testing + BDD</strong></td>
+      <td>UI/Web testing with BDD (Cucumber / SpecFlow / MABL)</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Cucumber BDD, POM, cross-browser execution across Chromium, Firefox, and WebKit</td>
+    </tr>
+    <tr>
+      <td><strong>API Testing (REST / Postman)</strong></td>
+      <td>REST APIs with Postman / Insomnia / Mocha</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Automated API microservices testing using Rest Assured and Postman, OAuth/JWT</td>
+    </tr>
+    <tr>
+      <td><strong>STLC &amp; Test Strategy</strong></td>
+      <td>Functional &amp; non-functional testing strategy, RTM, metrics</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Governed full STLC/SDLC, RTM, defect lifecycle, RCA, L3 production support</td>
+    </tr>
+    <tr>
+      <td><strong>Test Management (Jira/ALM)</strong></td>
+      <td>Hands-on Jira, HP ALM / QC, TestRail</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>End-to-end defect lifecycle in JIRA, HP ALM, and qTest</td>
+    </tr>
+    <tr>
+      <td><strong>Agile / Kanban</strong></td>
+      <td>Agile Scrum ceremonies, sprint planning, defect triage</td>
+      <td>Mandatory</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Agile Scrum (2-week sprint cycles, 3-month release cadence), sprint ceremonies</td>
+    </tr>
+    <tr>
+      <td><strong>AI Solution Testing</strong></td>
+      <td>Experience testing AI-powered solutions / ML models</td>
+      <td>Mandatory</td>
+      <td><span class="status-partial">Partial match</span></td>
+      <td>Leveraged AI tools (GitHub Copilot, Cursor AI) for script authoring &amp; locators</td>
+    </tr>
+    <tr>
+      <td><strong>Agentic AI (MCP/RAG/Prompting)</strong></td>
+      <td>Agentic AI (MCP, RAG, Prompting; test/dev solutions)</td>
+      <td>Mandatory</td>
+      <td><span class="status-missing">Missing</span></td>
+      <td>no evidence found</td>
+    </tr>
+    <tr>
+      <td><strong>CI/CD Integration</strong></td>
+      <td>Integrates test suites into CI/CD pipelines</td>
+      <td>Good-to-have</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Wired Playwright and API regression suites into Jenkins CI/CD pipelines</td>
+    </tr>
+    <tr>
+      <td><strong>Pharma / Life Sciences Domain</strong></td>
+      <td>Pharma, healthcare, or clinical trial background</td>
+      <td>Good-to-have</td>
+      <td><span class="status-matched">Matched</span></td>
+      <td>Healthcare Management Systems, Clinical Trial Research &amp; Randomization Platform</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3) Candidate Details</h2>
+
+<h3>1. Girish Joshi</h3>
+<p><strong>Tag Line:</strong> <span class="badge-pass">Screening Passed</span> <span class="badge-warn">Potential fit ⚠️</span><br>
+<em>Veteran QA Lead / SDET with 10+ years (15.5 active years) of extensive test engineering, Playwright + JS/TS automation, and deep Pharma/Life Sciences domain expertise, with baseline exposure to AI Model Validation.</em></p>
+
+<ul>
+  <li><strong>Score Breakdown:</strong> Mandatory <strong>56.7 / 85</strong>, Bonus <strong>5.8 / 10</strong>, Experience <strong>2.0 / 5</strong> &rarr; <strong>Total: 64.5 / 100</strong></li>
+  <li><strong>Mandatory Skills Breakdown:</strong>
+    <ul>
+      <li><strong>Matched:</strong> JS/TS (6.0), Playwright (6.0), Framework Design (8.0), STLC &amp; Strategy (7.0), Test Management (6.0), Agile/Kanban (6.0).</li>
+      <li><strong>Partial Match:</strong> UI/Web Testing + BDD (5.4) <em>(Strong Web UI &amp; POM; lacks Cucumber/SpecFlow BDD)</em>; AI Solution Testing (3.6) <em>(AI Model Validation at Luxoft)</em>.</li>
+      <li><strong>Claimed but Unevidenced ⚠️:</strong> API Testing (2.7) <em>(Postman/Swagger listed in skills table; lacks concrete automated project deliverables)</em>; Agentic AI (1.2) <em>(Copilot/Claude listed; no MCP/RAG architectures)</em>.</li>
+      <li><strong>Missing:</strong> Python (0.0), Cypress (0.0), Pytest (0.0).</li>
+    </ul>
+  </li>
+  <li><strong>Good-to-Have Bonus (5.8 / 10):</strong> Cloud Azure/AWS (2.0), CI/CD Integration (1.8), Pharma Domain (2.0) <em>(Philips AMD, Quintiles CTMS &amp; Argus Safety)</em>.</li>
+  <li><strong>Override Rules &amp; Red Flags:</strong> All hard gates passed. Interview probes needed on API test automation and Agentic AI depth.</li>
+  <li><strong>Final Call:</strong> <strong>Screening Passed · Potential fit ⚠️</strong></li>
+</ul>
+
+<hr style="border: none; border-top: 1px solid #e2e8f0; margin: 14px 0;">
+
+<h3>2. Tarun Killamsetty</h3>
+<p><strong>Tag Line:</strong> <span class="badge-fail">Screening Failed</span> <span class="badge-fail">Weak fit (AI Hard Gap) ❌</span><br>
+<em>Solid Senior Automation Engineer with 9.5 years in Playwright UI &amp; REST API automation within Oracle CTMS Life Sciences, but lacks any AI testing or Agentic AI experience.</em></p>
+
+<ul>
+  <li><strong>Score Breakdown:</strong> Mandatory <strong>57.0 / 85</strong>, Bonus <strong>5.0 / 10</strong>, Experience <strong>5.0 / 5</strong> &rarr; Raw: 67.0 / 100 &rarr; <strong>Capped Score (Rule #3): 59.0 / 100</strong></li>
+  <li><strong>Mandatory Skills Breakdown:</strong>
+    <ul>
+      <li><strong>Matched:</strong> JS/TS (6.0), Playwright (6.0), Framework Design (8.0), UI/Web + BDD (9.0), API Testing (9.0), STLC (7.0), Test Management (6.0), Agile (6.0).</li>
+      <li><strong>Missing:</strong> AI Solution Testing (0.0), Agentic AI (0.0), Python (0.0), Cypress (0.0), Pytest (0.0).</li>
+    </ul>
+  </li>
+  <li><strong>Override Rules &amp; Red Flags:</strong> <strong>Triggered Rubric Rule #3</strong> (AI-driven testing completely missing) &rarr; score capped &lt; 60 and downgraded to Weak fit.</li>
+  <li><strong>Final Call:</strong> <strong>Screening Failed · Weak fit ❌</strong></li>
+</ul>
+
+<hr style="border: none; border-top: 1px solid #e2e8f0; margin: 14px 0;">
+
+<h3>3. Shushil Kumar Koppu</h3>
+<p><strong>Tag Line:</strong> <span class="badge-fail">Screening Failed</span> <span class="badge-fail">Reject (Experience Gate &lt; 6y) ❌</span><br>
+<em>Skilled QA Automation Lead with 5.3 years experience and strong Playwright JS framework migration credentials, but strictly disqualified by the mandatory 6–10 years experience gate.</em></p>
+
+<ul>
+  <li><strong>Experience Gate:</strong> <strong>HARD FAIL — Automatic Disqualification</strong> (5.3 yrs vs 6.0 yrs mandatory minimum).</li>
+  <li><strong>Score:</strong> <strong>0.0 / 100 (Disqualified)</strong></li>
+  <li><strong>Skills Audit:</strong> Strong Playwright JS, POM, Cucumber BDD, Rest Assured API microservices, Jenkins CI/CD, and Healthcare domain experience.</li>
+  <li><strong>Final Call:</strong> <strong>Screening Failed · Reject ❌</strong></li>
+</ul>
+
+<h2>4) Recommendation &amp; Next Steps</h2>
+<ol>
+  <li><strong>Advance Girish Joshi to Technical Round 1:</strong> Probe live Playwright + TypeScript coding, Postman/Newman API automation depth, and Agentic AI / MCP fundamentals.</li>
+  <li><strong>Keep Tarun Killamsetty as Backup for Classical SDET Roles:</strong> Strong traditional Playwright + Rest Assured skillset in Oracle CTMS.</li>
+  <li><strong>Archive Shushil Kumar Koppu for Mid-Level SDET Openings:</strong> Recommended for roles requiring 3–5 years experience.</li>
+</ol>
+
+</body>
+</html>

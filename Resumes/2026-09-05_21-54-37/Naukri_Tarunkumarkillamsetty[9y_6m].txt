@@ -1,0 +1,66 @@
+TARUN KILLAMSETTY
+tarun.killamsetty@gmail.com +91-8886373717 India
+Senior QA Automation Engineer | Playwright | Selenium | Rest Assured | API Testing
+
+SUMMARY
+Senior QA Automation Engineer with 9.5+ years of experience in Manual and Automation Testing across Life Sciences, Payroll, CRM, 
+and E-commerce domains. Strong expertise in UI automation using Playwright and Selenium WebDriver, API Automation using Rest 
+Assured, Postman and SOAP UI, and end-to-end quality assurance in Agile environments. Experienced in regression, smoke, 
+functional, and API testing, with strong collaboration across QA, development, and product teams.
+
+SKILLS
+• Playwright.
+• Selenium WebDriver.
+• JavaScript.
+• Core Java.
+• TestNG.
+• Cucumber BDD.
+• Rest Assured.
+• Postman, SOAP UI.
+• Jira, HP ALM, TFS.
+• Git.
+• Functional, Regression, Smoke of UI & API.
+
+EXPERIENCE
+Mar 2020 – till date Senior QA Engineer, Oracle India Pvt Ltd
+Project: Clinical Trial Management Systems (CTMS) — Oracle's unified eClinical platform used by biotech, pharmaceutical companies, and CROs to 
+manage the drug trial lifecycle, maintain trial quality, and streamline investigator and site coordination.
+Key Responsibilities:
+• Executed functional and regression testing across Oracle Siebel CRM / CTMS modules.
+• Built UI automation for regression and smoke flows using Playwright and Selenium.
+• Worked with Playwright locators, assertions, reusable page objects, and CI execution.
+• Performed API Automation and validation using Rest Assured Postman and SOAP UI.
+• Created and maintained smoke and regression suites for release validation.
+• Mentored QA team members and participated in sprint planning and Agile ceremonies.
+• Designed and maintained reusable Page Object Model (POM) framework components for scalable test coverage.
+• Analyzed test execution results and reported defects with detailed logs in Jira.
+• Collaborated with cross-functional teams to review requirements and finalize test strategies for each sprint.
+• Integrated automated test suites into CI pipelines to support continuous regression validation.
+
+Feb 2019 - Dec 2019 Automation Test Engineer, Paychex IT Solutions India Pvt Ltd
+Project: SurePayroll — a small-scale payroll generator (under 50 employees) within Paychex's suite of Line-of-Business applications, each with its 
+own UI, API and DB.
+Key Responsibilities:
+• Automated end-to-end payroll workflows using Selenium with Cucumber.
+• Executed smoke and regression suites across environments.
+• Integrated automation suites with Jenkins and tracked defects in Jira.
+• Managed sprint ceremonies and collaborated with QA and development teams.
+• Designed test scenarios for payroll calculations, tax deductions, and compliance workflows.
+• Performed data validation and cross-checks between UI, API, and database layers.
+• Documented test results and prepared status reports for stakeholder review.
+
+Jun 2016 - Feb 2019 QA Engineer, CGI India, Bangalore
+Project: Comex Group — the fourth largest paint manufacturer and distributor of paints and waterproofing products in North America, with 3,300 
+locations.
+Key Responsibilities:
+• Created and reviewed test cases, plans, and automation scenarios.
+• Performed regression and functional testing for e-commerce workflows.
+• Worked with cross-functional teams to ensure release quality.
+• Prepared daily and weekly status reports.
+• Executed manual test cases for order management, cart, and checkout modules.
+• Logged and tracked defects to closure, coordinating with developers for timely fixes.
+• Participated in test data preparation and environment readiness checks before each release.
+
+EDUCATION
+2011 to 2015 Bachelor of Technology, Electronics and Communication Engineering
+GITAM University.
