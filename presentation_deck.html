@@ -55,7 +55,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 50px 80px 90px 80px;
+    padding: 45px 75px 85px 75px;
     display: none;
     flex-direction: column;
     justify-content: space-between;
@@ -77,17 +77,17 @@
     justify-content: space-between;
     align-items: flex-start;
     border-bottom: 1px solid var(--border-card);
-    padding-bottom: 18px;
-    margin-bottom: 24px;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
   }
 
   .slide-category {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -100,15 +100,14 @@
     height: 8px;
     border-radius: 50%;
     background: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
+    box-shadow: 0 0 8px var(--accent);
   }
 
   .slide-title {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 800;
-    background: linear-gradient(135deg, #ffffff 30%, #cbd5e1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #ffffff;
+    letter-spacing: -0.5px;
   }
 
   .slide-tag {
@@ -121,28 +120,25 @@
     color: var(--primary-light);
   }
 
-  /* Slide Content Area */
+  /* Slide Body & Grids */
   .slide-body {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 24px;
+    gap: 16px;
   }
 
-  /* Grids and Cards */
   .grid-2 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    height: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 
   .grid-3 {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    height: 100%;
   }
 
   .grid-4 {
@@ -151,15 +147,15 @@
     gap: 16px;
   }
 
+  /* Cards */
   .card {
     background: var(--bg-card);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-card);
-    border-radius: 16px;
-    padding: 24px;
+    border-radius: 14px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(16px);
     transition: transform 0.2s ease, border-color 0.2s ease;
   }
 
@@ -172,81 +168,79 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .card-icon {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    font-weight: bold;
   }
 
   .card-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: #ffffff;
   }
 
   .card-p {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-muted);
-    line-height: 1.6;
-    margin-bottom: 12px;
+    line-height: 1.55;
+    margin-bottom: 10px;
   }
 
   .card-list {
     list-style: none;
+    font-size: 12.5px;
+    color: #cbd5e1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    font-size: 13.5px;
+    gap: 6px;
   }
 
   .card-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    color: #e2e8f0;
+    position: relative;
+    padding-left: 16px;
   }
 
   .card-list li::before {
-    content: "▹";
-    color: var(--accent);
-    font-size: 16px;
-    line-height: 1;
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary-light);
+    font-weight: bold;
   }
+
+  /* Badges & Pills */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+
+  .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+  .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+  .badge-red   { background: rgba(244, 63, 94, 0.2);  color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+  .badge-blue  { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+  .badge-purple{ background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
 
   .code-badge {
     font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
     background: rgba(15, 23, 42, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #38bdf8;
     padding: 2px 6px;
     border-radius: 4px;
-    font-size: 12px;
   }
-
-  /* Status Tags */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-  .badge-amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-  .badge-red { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
-  .badge-blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
 
   /* Navigation Bar */
   .deck-nav {
@@ -254,7 +248,7 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 70px;
+    height: 65px;
     background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(12px);
     border-top: 1px solid var(--border-card);
@@ -309,7 +303,7 @@
 
   .progress-container {
     position: fixed;
-    bottom: 70px;
+    bottom: 65px;
     left: 0;
     width: 100%;
     height: 4px;
@@ -329,7 +323,7 @@
     text-align: center;
     justify-content: center !important;
     align-items: center;
-    gap: 28px;
+    gap: 22px;
   }
 
   .hero-pill {
@@ -338,36 +332,36 @@
     gap: 8px;
     background: rgba(79, 70, 229, 0.2);
     border: 1px solid rgba(129, 140, 248, 0.4);
-    padding: 8px 20px;
+    padding: 6px 18px;
     border-radius: 9999px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #a5b4fc;
   }
 
   .hero-title {
-    font-size: 52px;
+    font-size: 48px;
     font-weight: 800;
     line-height: 1.15;
     background: linear-gradient(135deg, #ffffff 20%, #93c5fd 60%, #c084fc 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    max-width: 900px;
+    max-width: 920px;
   }
 
   .hero-desc {
-    font-size: 18px;
+    font-size: 17px;
     color: #94a3b8;
-    max-width: 750px;
-    line-height: 1.6;
+    max-width: 780px;
+    line-height: 1.55;
   }
 
   .hero-meta {
     display: flex;
-    gap: 20px;
-    font-size: 13px;
+    gap: 16px;
+    font-size: 12.5px;
     color: #64748b;
-    margin-top: 10px;
+    margin-top: 6px;
   }
 
   /* Tables in Slide */
@@ -375,7 +369,7 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 13px;
+    font-size: 12.5px;
     background: rgba(15, 23, 42, 0.6);
     border-radius: 12px;
     overflow: hidden;
@@ -385,14 +379,14 @@
   .slide-table th {
     background: rgba(30, 41, 59, 0.9);
     color: #cbd5e1;
-    padding: 12px 16px;
+    padding: 10px 14px;
     font-weight: 700;
     text-align: left;
     border-bottom: 1px solid var(--border-card);
   }
 
   .slide-table td {
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     color: #e2e8f0;
   }
@@ -483,35 +477,40 @@
   <!-- SLIDE 1: HERO TITLE -->
   <div class="slide hero-slide active" id="slide-1">
     <div class="hero-pill">
-      <span>🚀</span> INTERNAL TECH DEMO & AGENTIC CASE STUDY
+      <span>🚀</span> TECH DEMO • MULTI-CHANNEL ATS AGENTIC ARCHITECTURE
     </div>
     <h1 class="hero-title">AI-Powered ATS Candidate Screener</h1>
     <p class="hero-desc">
-      Architecting an autonomous, evidence-driven AI screening agent with mathematical scoring rubrics, anti-hallucination guardrails, and automated PDF audit reports.
+      An autonomous, evidence-driven screening system featuring dynamic JD injection, 4-tier no-inflation verification, mathematical scoring rubrics, and multi-channel deployment (Cloud, Copilot, Web & CLI).
     </p>
-    <div class="grid-3" style="max-width: 850px; width: 100%; margin-top: 10px;">
-      <div class="card" style="padding: 16px; align-items: center; text-align: center;">
-        <span style="font-size: 24px; margin-bottom: 6px;">⚡</span>
-        <strong style="color: #fff; font-size: 15px;">90% Faster</strong>
-        <span style="font-size: 12px; color: var(--text-muted);">From 45 mins to 30 secs</span>
+    <div class="grid-4" style="max-width: 950px; width: 100%; margin-top: 8px;">
+      <div class="card" style="padding: 14px; align-items: center; text-align: center;">
+        <span style="font-size: 22px; margin-bottom: 4px;">⚡</span>
+        <strong style="color: #fff; font-size: 14px;">90% Faster</strong>
+        <span style="font-size: 11.5px; color: var(--text-muted);">45 mins to 30 secs per batch</span>
       </div>
-      <div class="card" style="padding: 16px; align-items: center; text-align: center;">
-        <span style="font-size: 24px; margin-bottom: 6px;">🎯</span>
-        <strong style="color: #fff; font-size: 15px;">Zero Skill Inflation</strong>
-        <span style="font-size: 12px; color: var(--text-muted);">Strict deliverable verification</span>
+      <div class="card" style="padding: 14px; align-items: center; text-align: center;">
+        <span style="font-size: 22px; margin-bottom: 4px;">🎯</span>
+        <strong style="color: #fff; font-size: 14px;">Zero Skill Inflation</strong>
+        <span style="font-size: 11.5px; color: var(--text-muted);">Strict deliverable verification</span>
       </div>
-      <div class="card" style="padding: 16px; align-items: center; text-align: center;">
-        <span style="font-size: 24px; margin-bottom: 6px;">📄</span>
-        <strong style="color: #fff; font-size: 15px;">Audit-Ready Exports</strong>
-        <span style="font-size: 12px; color: var(--text-muted);">Self-contained PDF & HTML twins</span>
+      <div class="card" style="padding: 14px; align-items: center; text-align: center;">
+        <span style="font-size: 22px; margin-bottom: 4px;">🌐</span>
+        <strong style="color: #fff; font-size: 14px;">Streamlit Cloud</strong>
+        <span style="font-size: 11.5px; color: var(--text-muted);">One-click team web portal</span>
+      </div>
+      <div class="card" style="padding: 14px; align-items: center; text-align: center;">
+        <span style="font-size: 22px; margin-bottom: 4px;">🤖</span>
+        <strong style="color: #fff; font-size: 14px;">M365 Copilot Ready</strong>
+        <span style="font-size: 11.5px; color: var(--text-muted);">Teams Declarative Agent</span>
       </div>
     </div>
     <div class="hero-meta">
       <span><strong>Presenter:</strong> Surendra Bharadwaj</span>
       <span>•</span>
-      <span><strong>Skill Framework:</strong> Claude/Antigravity Agentic Customization</span>
+      <span><strong>Cloud URL:</strong> candidate-screener-agent.streamlit.app</span>
       <span>•</span>
-      <span><strong>Target Domain:</strong> SDET & QA Engineering</span>
+      <span><strong>Engine:</strong> Antigravity / Claude Agentic Architecture</span>
     </div>
   </div>
 
@@ -519,8 +518,8 @@
   <div class="slide" id="slide-2">
     <div class="slide-header">
       <div>
-        <div class="slide-category">The Business Challenge</div>
-        <h2 class="slide-title">Why Traditional Resume Screening Breaks Down</h2>
+        <div class="slide-category">The Recruitment Bottleneck</div>
+        <h2 class="slide-title">Why Traditional Screening Fails Engineering Teams</h2>
       </div>
       <div class="slide-tag">Problem Statement</div>
     </div>
@@ -529,12 +528,12 @@
         <div class="card" style="border-top: 4px solid var(--accent-rose);">
           <div class="card-header">
             <div class="card-icon" style="background: rgba(244, 63, 94, 0.2); color: var(--accent-rose);">⚠️</div>
-            <div class="card-title">Resume Keyword Padding</div>
+            <div class="card-title">Keyword Padding & Inflation</div>
           </div>
-          <p class="card-p">Candidates copy-paste modern keywords (Playwright, Agentic AI, MCP, RAG) into bare skills sections without having touched them in actual project deliverables.</p>
+          <p class="card-p">Candidates pad keywords (Playwright, Agentic AI, MCP, RAG) into bare skills sections without having touched them in actual project deliverables.</p>
           <ul class="card-list">
             <li>Standard ATS searches match raw strings blindly.</li>
-            <li>No distinction between "hands-on expertise" and "passing buzzword".</li>
+            <li>No distinction between "hands-on expertise" and "passing buzzwords".</li>
           </ul>
         </div>
 
@@ -543,7 +542,7 @@
             <div class="card-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber);">⏳</div>
             <div class="card-title">Reviewer Fatigue & Inconsistency</div>
           </div>
-          <p class="card-p">Engineering managers and leads spend 30–45 minutes per profile reading lengthy 4–6 page PDFs, leading to subjective and inconsistent evaluation.</p>
+          <p class="card-p">Engineering managers and leads spend 30–45 minutes per profile reading lengthy 4–6 page PDFs, leading to subjective, inconsistent evaluation.</p>
           <ul class="card-list">
             <li>Inconsistent rubric application across interviewers.</li>
             <li>Key qualification gaps missed before scheduling 1st technical round.</li>
@@ -553,7 +552,7 @@
         <div class="card" style="border-top: 4px solid var(--accent-blue);">
           <div class="card-header">
             <div class="card-icon" style="background: rgba(56, 189, 248, 0.2); color: var(--accent-blue);">📉</div>
-            <div class="card-title">Expensive Interview Waste</div>
+            <div class="card-title">High Interview Waste & Toil</div>
           </div>
           <p class="card-p">Unqualified candidates pass initial HR screens, consuming high-value senior engineering hours only to fail on core coding or hard requirements.</p>
           <ul class="card-list">
@@ -565,56 +564,55 @@
     </div>
   </div>
 
-  <!-- SLIDE 3: AGENT ARCHITECTURE & BLUEPRINT -->
+  <!-- SLIDE 3: AGENT ARCHITECTURE & DYNAMIC JD PIPELINE -->
   <div class="slide" id="slide-3">
     <div class="slide-header">
       <div>
         <div class="slide-category">System Architecture</div>
-        <h2 class="slide-title">How the Candidate Screener Agent is Built</h2>
+        <h2 class="slide-title">End-to-End Autonomous Ingestion & Evaluation Pipeline</h2>
       </div>
-      <div class="slide-tag">Skill Architecture</div>
+      <div class="slide-tag">Core Architecture</div>
     </div>
     <div class="slide-body">
       <div class="grid-2">
         <div class="card">
           <div class="card-header">
             <div class="card-icon" style="background: rgba(79, 70, 229, 0.2); color: var(--primary-light);">📂</div>
-            <div class="card-title">Skill Folder Structure</div>
+            <div class="card-title">Modular Structure & Extensibility</div>
           </div>
-          <p class="card-p">Configured cleanly inside <span class="code-badge">.claude/skills/candidate-screener/</span> adhering to Antigravity / Claude Agentic Standards:</p>
+          <p class="card-p">Built as a standalone agentic package with dual-mode JD flexibility:</p>
           <ul class="card-list">
-            <li><span class="code-badge">SKILL.md</span>: Master instruction set, operational rules, workflow triggers, and output schema.</li>
-            <li><span class="code-badge">references/job-description.md</span>: Active SDET role requirements, must-haves, good-to-haves, and experience gates.</li>
-            <li><span class="code-badge">references/rubric.md</span>: Mathematical 100-point rubric, status multipliers, and hard-override rules.</li>
-            <li><span class="code-badge">Multi-Format Ingestion</span>: Headless extraction across PDF, DOCX, DOC, TXT, and Markdown.</li>
+            <li><span class="code-badge">Dynamic JD Upload</span>: Accepts custom JD (.md, .txt, .pdf, .docx) or falls back to ground truth <span class="code-badge">references/job-description.md</span>.</li>
+            <li><span class="code-badge">Multi-Format Parsing</span>: Headless extraction across PDF, DOCX, DOC, TXT, and Markdown via PyPDF, PyMuPDF, and python-docx.</li>
+            <li><span class="code-badge">Timestamped Archiving</span>: Auto-organizes files into <span class="code-badge">Resumes/&lt;Timestamp&gt;/</span> and exports reports to <span class="code-badge">Reports/&lt;Timestamp&gt;/</span>.</li>
           </ul>
         </div>
 
         <div class="card">
           <div class="card-header">
             <div class="card-icon" style="background: rgba(6, 182, 212, 0.2); color: var(--accent);">⚙️</div>
-            <div class="card-title">Agent Execution Pipeline</div>
+            <div class="card-title">5-Stage Execution Pipeline</div>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
-            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 8px 12px; border-radius: 8px;">
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12.5px;">
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 6px 10px; border-radius: 8px;">
               <span style="font-weight: 700; color: var(--accent);">STEP 1</span>
-              <span><strong>Taxonomy Mapping:</strong> Parse JD into weighted mandatory & good-to-have matrices.</span>
+              <span><strong>JD Ingestion:</strong> Parse role taxonomy, mandatory gates, and scoring weights.</span>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 8px 12px; border-radius: 8px;">
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 6px 10px; border-radius: 8px;">
               <span style="font-weight: 700; color: var(--accent);">STEP 2</span>
-              <span><strong>Document Ingestion:</strong> Extract full text without hallucination or truncation.</span>
+              <span><strong>Candidate Extraction:</strong> Parse raw text without hallucination or truncation.</span>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 8px 12px; border-radius: 8px;">
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 6px 10px; border-radius: 8px;">
               <span style="font-weight: 700; color: var(--accent);">STEP 3</span>
-              <span><strong>Experience Gate:</strong> Check <span class="code-badge">Exp &lt; 6 yrs</span> prior to scoring (Instant Fail if under).</span>
+              <span><strong>Hard Gate Verification:</strong> Check <span class="code-badge">Exp &lt; 6 yrs</span> & Core Languages prior to scoring.</span>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 8px 12px; border-radius: 8px;">
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 6px 10px; border-radius: 8px;">
               <span style="font-weight: 700; color: var(--accent);">STEP 4</span>
-              <span><strong>Evidence Audit:</strong> Apply 4-tier status factor (Matched/Partial/Claimed/Missing).</span>
+              <span><strong>4-Tier Evidence Audit:</strong> Apply Matched (1.0x), Partial (0.6x), Claimed (0.3x), Missing (0.0x).</span>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 8px 12px; border-radius: 8px;">
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 6px 10px; border-radius: 8px;">
               <span style="font-weight: 700; color: var(--accent);">STEP 5</span>
-              <span><strong>Delivery:</strong> Render Markdown + HTML + Headless Edge PDF simultaneously.</span>
+              <span><strong>Twin Report Generation:</strong> Deliver interactive UI + Markdown + HTML + Vector PDF.</span>
             </div>
           </div>
         </div>
@@ -627,51 +625,51 @@
     <div class="slide-header">
       <div>
         <div class="slide-category">Core Innovation</div>
-        <h2 class="slide-title">The "No-Skill-Inflation" Evidence Engine</h2>
+        <h2 class="slide-title">The "No-Skill-Inflation" 4-Tier Evidence Engine</h2>
       </div>
-      <div class="slide-tag">Evidence Verification</div>
+      <div class="slide-tag">Verification Protocol</div>
     </div>
     <div class="slide-body">
-      <p style="font-size: 15px; color: var(--text-muted); margin-bottom: 8px;">
+      <p style="font-size: 14.5px; color: var(--text-muted); margin-bottom: 6px;">
         Unlike standard search tools, the agent demands <strong>verifiable project deliverables</strong>. A bare keyword in a skills tag cloud is NEVER awarded full points.
       </p>
       <div class="grid-4">
         <div class="card" style="border-top: 4px solid var(--accent-green);">
           <span class="badge badge-green" style="margin-bottom: 8px;">Matched (M) • 1.0×</span>
-          <strong style="color: #fff; font-size: 15px; margin-bottom: 6px;">Concrete Evidence</strong>
-          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">
-            Skill is demonstrated in ≥1 project with tangible output. E.g.: <em>"Migrated test suite to Playwright JS, cutting runtime by 45%."</em>
+          <strong style="color: #fff; font-size: 14px; margin-bottom: 4px;">Concrete Evidence</strong>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45;">
+            Demonstrated in ≥1 project with tangible output. E.g.: <em>"Migrated test suite to Playwright JS, cutting runtime by 45%."</em>
           </p>
         </div>
 
         <div class="card" style="border-top: 4px solid var(--accent-amber);">
           <span class="badge badge-amber" style="margin-bottom: 8px;">Partial Match (P) • 0.6×</span>
-          <strong style="color: #fff; font-size: 15px; margin-bottom: 6px;">Adjacent / Tangential</strong>
-          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">
+          <strong style="color: #fff; font-size: 14px; margin-bottom: 4px;">Adjacent / Tangential</strong>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45;">
             Adjacent tech used or passing project mention without full framework ownership. E.g., Web UI testing without explicit Cucumber BDD.
           </p>
         </div>
 
         <div class="card" style="border-top: 4px solid var(--accent-rose);">
           <span class="badge badge-red" style="margin-bottom: 8px;">Claimed (C) • 0.3×</span>
-          <strong style="color: #fff; font-size: 15px; margin-bottom: 6px;">Resume Tag Padded</strong>
-          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">
-            Appears in technical skills summary or tools bullet list, but <strong>zero deliverables</strong> exist in project history. Flags interview probe.
+          <strong style="color: #fff; font-size: 14px; margin-bottom: 4px;">Resume Tag Padded</strong>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45;">
+            Appears in technical skills summary or tools list, but <strong>zero deliverables</strong> exist in project history. Flags interview probe.
           </p>
         </div>
 
         <div class="card" style="border-top: 4px solid #64748b;">
           <span class="badge" style="background: rgba(100, 116, 139, 0.2); color: #cbd5e1; margin-bottom: 8px;">Missing (U) • 0.0×</span>
-          <strong style="color: #fff; font-size: 15px; margin-bottom: 6px;">Zero Mention</strong>
-          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">
-            Does not appear anywhere under the name, abbreviation, or verified industry synonyms.
+          <strong style="color: #fff; font-size: 14px; margin-bottom: 4px;">Zero Mention</strong>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45;">
+            Does not appear anywhere under name, abbreviation, or verified industry synonyms.
           </p>
         </div>
       </div>
 
-      <div class="card" style="background: rgba(79, 70, 229, 0.1); border-color: rgba(129, 140, 248, 0.3); padding: 14px 20px;">
-        <strong style="color: #a5b4fc; font-size: 13.5px;">🛡️ Anti-Hallucination Guardrail:</strong>
-        <span style="font-size: 13px; color: #e2e8f0;"> The agent is strictly constrained to the text extracted from the file. It cannot "infer" that a candidate knows Python just because they know Java, unless explicitly written and evidenced.</span>
+      <div class="card" style="background: rgba(79, 70, 229, 0.1); border-color: rgba(129, 140, 248, 0.3); padding: 12px 18px;">
+        <strong style="color: #a5b4fc; font-size: 13px;">🛡️ Anti-Hallucination Guardrail:</strong>
+        <span style="font-size: 12.5px; color: #e2e8f0;"> The agent is strictly constrained to the text extracted from the file. It cannot "infer" that a candidate knows Python just because they know Java, unless explicitly written and evidenced.</span>
       </div>
     </div>
   </div>
@@ -683,7 +681,7 @@
         <div class="slide-category">Evaluation Rubric</div>
         <h2 class="slide-title">100-Point Scoring Model & Hard-Fail Overrides</h2>
       </div>
-      <div class="slide-tag">Rubric Logic</div>
+      <div class="slide-tag">Mathematical Model</div>
     </div>
     <div class="slide-body">
       <div class="grid-2">
@@ -692,7 +690,7 @@
             <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-green);">📊</div>
             <div class="card-title">Score Capacity Formula</div>
           </div>
-          <table class="slide-table" style="font-size: 12px;">
+          <table class="slide-table" style="font-size: 11.5px;">
             <thead>
               <tr><th>Component</th><th>Max Weight</th><th>Description</th></tr>
             </thead>
@@ -726,17 +724,17 @@
             <div class="card-icon" style="background: rgba(244, 63, 94, 0.2); color: var(--accent-rose);">🛑</div>
             <div class="card-title">Hard-Fail & Override Rules</div>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12.5px;">
-            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 8px 10px;">
+          <div style="display: flex; flex-direction: column; gap: 7px; font-size: 12px;">
+            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 7px 9px;">
               <strong>Rule 1 — Experience Gate:</strong> Total Experience &lt; 6.0 years &rarr; <strong>Automatic Instant Rejection</strong> prior to scoring.
             </div>
-            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 8px 10px;">
+            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 7px 9px;">
               <strong>Rule 2 — Core Language:</strong> Neither JS/TS nor Python evidenced &rarr; <strong>Reject</strong> regardless of score.
             </div>
-            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 8px 10px;">
+            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 7px 9px;">
               <strong>Rule 3 — AI Hard Gap:</strong> Both AI Testing & Agentic AI missing &rarr; <strong>Cap score at &lt; 60 and downgrade verdict tier</strong>.
             </div>
-            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 8px 10px;">
+            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 7px 9px;">
               <strong>Rule 4 — Skills Padding:</strong> ≥ 3 claimed unevidenced skills triggers interview red flag and tier penalty.
             </div>
           </div>
@@ -745,14 +743,14 @@
     </div>
   </div>
 
-  <!-- SLIDE 6: LIVE CASE STUDY & RESULTS -->
+  <!-- SLIDE 6: LIVE CASE STUDY & BENCHMARK -->
   <div class="slide" id="slide-6">
     <div class="slide-header">
       <div>
-        <div class="slide-category">Live Demo Results</div>
-        <h2 class="slide-title">Case Study: Screening 3 Real Candidate Resumes</h2>
+        <div class="slide-category">Live Benchmark Results</div>
+        <h2 class="slide-title">Case Study: Screening Real Candidate Profiles</h2>
       </div>
-      <div class="slide-tag">Execution Walkthrough</div>
+      <div class="slide-tag">Live Benchmark</div>
     </div>
     <div class="slide-body">
       <table class="slide-table">
@@ -767,14 +765,23 @@
         </thead>
         <tbody>
           <tr>
+            <td><strong>Flang Paulson</strong></td>
+            <td>8.0 yrs</td>
+            <td><strong style="color: #34d399;">80.5 / 100</strong></td>
+            <td><span class="badge badge-green">PASSED</span> <span class="badge badge-green">Strong Fit 🚀</span></td>
+            <td>
+              • High Playwright JS/TS framework ownership with verified CI/CD integration<br>
+              • REST API automation + Performance testing deliverables evidenced
+            </td>
+          </tr>
+          <tr>
             <td><strong>Girish Joshi</strong></td>
             <td>10+ yrs (15.5)</td>
             <td><strong style="color: #34d399;">64.5 / 100</strong></td>
             <td><span class="badge badge-green">PASSED</span> <span class="badge badge-amber">Potential ⚠️</span></td>
             <td>
-              • Playwright + JS/TS evidenced at Luxoft<br>
-              • 8+ yrs Life Sciences/Pharma domain (Philips, Quintiles/IQVIA)<br>
-              • Evidenced AI Model Validation testing bullet
+              • Playwright + JS/TS evidenced at Luxoft; 8+ yrs Life Sciences/Pharma domain<br>
+              • Evidenced AI Model Validation testing bullet; lacks Agentic AI frameworks
             </td>
           </tr>
           <tr>
@@ -784,153 +791,216 @@
             <td><span class="badge badge-red">FAILED</span> <span class="badge badge-red">Weak Fit (AI Gap) ❌</span></td>
             <td>
               • Strong 9.5 yrs Playwright UI + Rest Assured API at Oracle CTMS<br>
-              • <strong>Triggered Rule #3 Override:</strong> Zero AI or Agentic experience<br>
-              • Capped score &lt; 60 and downgraded from Potential to Weak
+              • <strong>Triggered Rule #3 Override:</strong> Zero AI/Agentic experience (Score capped &lt;60)
             </td>
           </tr>
           <tr>
-            <td><strong>Shushil Kumar Koppu</strong></td>
+            <td><strong>Shushil Koppu</strong></td>
             <td>5.3 yrs</td>
             <td><strong style="color: #fb7185;">0.0 / 100</strong><br><small style="color: var(--text-muted);">(Disqualified)</small></td>
             <td><span class="badge badge-red">FAILED</span> <span class="badge badge-red">Gate Fail (&lt;6y) ❌</span></td>
             <td>
-              • Superb modern Playwright JS migration + Microservices API skillset<br>
-              • <strong>Triggered Rule #1 Gate:</strong> 5.3 yrs total experience vs 6.0 yrs hard cutoff
+              • Excellent Playwright JS migration + Microservices API skillset<br>
+              • <strong>Triggered Rule #1 Gate:</strong> 5.3 yrs total exp vs 6.0 yrs hard requirement
             </td>
           </tr>
         </tbody>
       </table>
 
-      <div class="card" style="padding: 12px 18px; background: rgba(15, 23, 42, 0.8);">
-        <strong style="color: #fff; font-size: 13px;">💡 Outcome:</strong>
-        <span style="font-size: 13px; color: var(--text-muted);"> Saved the team 2+ hours of interviewing. Selected <strong>Girish Joshi</strong> for Round 1 with targeted probe questions on API pipeline automation & Agentic architecture.</span>
+      <div class="card" style="padding: 10px 16px; background: rgba(15, 23, 42, 0.8);">
+        <strong style="color: #fff; font-size: 12.5px;">💡 Strategic Outcome:</strong>
+        <span style="font-size: 12.5px; color: var(--text-muted);"> Saved 4+ hours of engineering interviews. Selected <strong>Flang Paulson</strong> and <strong>Girish Joshi</strong> with pre-computed targeted probe questions for technical rounds.</span>
       </div>
     </div>
   </div>
 
-  <!-- SLIDE 7: BUSINESS & ENGINEERING BENEFITS -->
+  <!-- SLIDE 7: MULTI-CHANNEL DEPLOYMENT ECOSYSTEM -->
   <div class="slide" id="slide-7">
     <div class="slide-header">
       <div>
-        <div class="slide-category">Value Proposition</div>
-        <h2 class="slide-title">Tangible Impact & ROI for Engineering Teams</h2>
+        <div class="slide-category">Enterprise Distribution</div>
+        <h2 class="slide-title">Multi-Channel Deployment & Access Ecosystem</h2>
       </div>
-      <div class="slide-tag">Benefits & Value</div>
+      <div class="slide-tag">Distribution Channels</div>
     </div>
     <div class="slide-body">
-      <div class="grid-3">
-        <div class="card">
+      <div class="grid-4">
+        <div class="card" style="border-top: 4px solid var(--accent);">
+          <div class="card-header">
+            <div class="card-icon" style="background: rgba(6, 182, 212, 0.2); color: var(--accent);">☁️</div>
+            <div class="card-title">Streamlit Cloud</div>
+          </div>
+          <p class="card-p">Hosted publicly / privately with zero installation.</p>
+          <ul class="card-list">
+            <li>URL: <span class="code-badge">candidate-screener-agent.streamlit.app</span></li>
+            <li>Drag-and-drop resumes & optional custom JD.</li>
+            <li>Direct PDF/HTML/MD report download buttons.</li>
+          </ul>
+        </div>
+
+        <div class="card" style="border-top: 4px solid var(--primary-light);">
+          <div class="card-header">
+            <div class="card-icon" style="background: rgba(129, 140, 248, 0.2); color: var(--primary-light);">💻</div>
+            <div class="card-title">Local Web Portal</div>
+          </div>
+          <p class="card-p">Standalone browser app for confidential batch runs.</p>
+          <ul class="card-list">
+            <li>Launch with <span class="code-badge">run_screener_portal.bat</span>.</li>
+            <li>Runs on <span class="code-badge">localhost:8080</span>.</li>
+            <li>Auto-saves results to timestamped folders.</li>
+          </ul>
+        </div>
+
+        <div class="card" style="border-top: 4px solid var(--accent-purple);">
+          <div class="card-header">
+            <div class="card-icon" style="background: rgba(168, 85, 247, 0.2); color: var(--accent-purple);">🤖</div>
+            <div class="card-title">M365 Copilot Agent</div>
+          </div>
+          <p class="card-p">Integrated into Microsoft Teams & Copilot Chat.</p>
+          <ul class="card-list">
+            <li>Packaged via <span class="code-badge">copilot/manifest.json</span>.</li>
+            <li>Screen candidates directly in Teams chat threads.</li>
+            <li>Adheres to corporate security boundaries.</li>
+          </ul>
+        </div>
+
+        <div class="card" style="border-top: 4px solid var(--accent-green);">
           <div class="card-header">
             <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-green);">⚡</div>
-            <div class="card-title">Massive Velocity Boost</div>
+            <div class="card-title">IDE & CLI Agent</div>
           </div>
+          <p class="card-p">Native Antigravity / Claude Agentic CLI execution.</p>
           <ul class="card-list">
-            <li>Screen 50+ profiles in seconds instead of spending full days.</li>
-            <li>Instant PDF and Markdown reports generated autonomously.</li>
-            <li>Fast-tracks top 5% candidates before competitors reach them.</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-icon" style="background: rgba(6, 182, 212, 0.2); color: var(--accent);">⚖️</div>
-            <div class="card-title">Objective & Bias-Free</div>
-          </div>
-          <ul class="card-list">
-            <li>Identical mathematical rubric applied to every profile.</li>
-            <li>Immune to resume aesthetic embellishments or keyword stuffing.</li>
-            <li>Clear, auditable justification for every score point awarded.</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-icon" style="background: rgba(129, 140, 248, 0.2); color: var(--primary-light);">🎯</div>
-            <div class="card-title">Targeted Interview Probes</div>
-          </div>
-          <ul class="card-list">
-            <li>Automatically highlights "Claimed but Unevidenced" items.</li>
-            <li>Gives interviewers pre-prepared questions for live technical rounds.</li>
-            <li>Guarantees zero missed hard requirements before hiring decisions.</li>
+            <li>Trigger via chat prompt or batch scripts.</li>
+            <li>Autonomous multi-format text parsing.</li>
+            <li>Generates headless vector PDF outputs.</li>
           </ul>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SLIDE 8: HOW TO BUILD YOUR OWN AGENTS (TEAM BLUEPRINT) -->
+  <!-- SLIDE 8: 7-SECTION AUDIT REPORT TWINS -->
   <div class="slide" id="slide-8">
     <div class="slide-header">
       <div>
+        <div class="slide-category">Audit-Ready Deliverables</div>
+        <h2 class="slide-title">Standardized 7-Section Reporting Twin Architecture</h2>
+      </div>
+      <div class="slide-tag">Standardized Schema</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-green);">📋</div>
+            <div class="card-title">The 7 Mandatory Report Sections</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+            <div style="display: flex; gap: 8px;"><strong>1. Screened Files:</strong> Full audit list of evaluated resume files.</div>
+            <div style="display: flex; gap: 8px;"><strong>2. Active JD:</strong> Explicit ground truth JD used for the screening.</div>
+            <div style="display: flex; gap: 8px;"><strong>3. Candidates Ranked:</strong> Exact count of evaluated profiles.</div>
+            <div style="display: flex; gap: 8px;"><strong>4. Ranking Table:</strong> Score, Verdict, Experience & Skill Statuses.</div>
+            <div style="display: flex; gap: 8px;"><strong>5. Key Takeaways & Overrides:</strong> Executive fit summary & gate triggers.</div>
+            <div style="display: flex; gap: 8px;"><strong>6. Gap Matrix:</strong> Per-skill comparison (JD vs Candidate Evidence).</div>
+            <div style="display: flex; gap: 8px;"><strong>7. Candidate Details:</strong> Arithmetic breakdown, probe questions & final call.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon" style="background: rgba(6, 182, 212, 0.2); color: var(--accent);">📑</div>
+            <div class="card-title">Multi-Format Synchronized Twins</div>
+          </div>
+          <ul class="card-list" style="font-size: 12.5px; gap: 8px;">
+            <li><strong>Markdown (<span class="code-badge">.md</span>):</strong> Instant lightweight terminal view, git-trackable, perfect for developer PRs and chat display.</li>
+            <li><strong>Interactive HTML (<span class="code-badge">.html</span>):</strong> Self-contained, beautiful dark-mode web report with interactive badges, progress bars, and filters.</li>
+            <li><strong>Vector Print PDF (<span class="code-badge">.pdf</span>):</strong> Generated via headless browser print engine or pure-Python FPDF2 for audit sharing with hiring leads.</li>
+          </ul>
+          <div style="margin-top: 10px; background: rgba(79, 70, 229, 0.15); padding: 10px; border-radius: 8px; font-size: 12px; color: #cbd5e1;">
+            💡 <em>Every run guarantees 100% content parity across chat, HTML, Markdown, and PDF.</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: HOW TO BUILD YOUR OWN AGENTS (TEAM BLUEPRINT) -->
+  <div class="slide" id="slide-9">
+    <div class="slide-header">
+      <div>
         <div class="slide-category">Team Empowerment</div>
-        <h2 class="slide-title">Blueprint: How You Can Build Custom Agents</h2>
+        <h2 class="slide-title">Blueprint: How You Can Build Custom Team Agents</h2>
       </div>
       <div class="slide-tag">Actionable Framework</div>
     </div>
     <div class="slide-body">
-      <p style="font-size: 14.5px; color: var(--text-muted);">
-        You can replicate this exact agentic architecture for <strong>any project or workflow</strong> across QA, Development, DevOps, and Operations:
+      <p style="font-size: 14px; color: var(--text-muted);">
+        Replicate this exact agentic architecture for <strong>any project or workflow</strong> across QA, Development, DevOps, and Operations:
       </p>
       <div class="grid-4">
         <div class="card">
-          <div style="font-size: 24px; margin-bottom: 8px;">1️⃣</div>
-          <strong style="color: #fff; font-size: 14px; margin-bottom: 4px;">Define Instruction</strong>
-          <span class="code-badge" style="margin-bottom: 8px;">SKILL.md</span>
-          <p style="font-size: 12px; color: var(--text-muted);">Define role, step-by-step procedure, triggers, and anti-hallucination rules.</p>
+          <div style="font-size: 22px; margin-bottom: 6px;">1️⃣</div>
+          <strong style="color: #fff; font-size: 13.5px; margin-bottom: 4px;">Instruction Schema</strong>
+          <span class="code-badge" style="margin-bottom: 6px;">SKILL.md / AGENTS.md</span>
+          <p style="font-size: 11.5px; color: var(--text-muted);">Define role, multi-step procedures, anti-hallucination guardrails, and output schemas.</p>
         </div>
 
         <div class="card">
-          <div style="font-size: 24px; margin-bottom: 8px;">2️⃣</div>
-          <strong style="color: #fff; font-size: 14px; margin-bottom: 4px;">Ground Truth Data</strong>
-          <span class="code-badge" style="margin-bottom: 8px;">references/</span>
-          <p style="font-size: 12px; color: var(--text-muted);">Provide explicit standards, scoring rubrics, coding conventions, or checklists.</p>
+          <div style="font-size: 22px; margin-bottom: 6px;">2️⃣</div>
+          <strong style="color: #fff; font-size: 13.5px; margin-bottom: 4px;">Ground Truth Data</strong>
+          <span class="code-badge" style="margin-bottom: 6px;">references/</span>
+          <p style="font-size: 11.5px; color: var(--text-muted);">Provide explicit standards, scoring rubrics, coding conventions, or validation checklists.</p>
         </div>
 
         <div class="card">
-          <div style="font-size: 24px; margin-bottom: 8px;">3️⃣</div>
-          <strong style="color: #fff; font-size: 14px; margin-bottom: 4px;">Tool Automation</strong>
-          <span class="code-badge" style="margin-bottom: 8px;">CLI / Python Scripts</span>
-          <p style="font-size: 12px; color: var(--text-muted);">Hook parsers, linters, test runners, or headless Edge PDF printers into the flow.</p>
+          <div style="font-size: 22px; margin-bottom: 6px;">3️⃣</div>
+          <strong style="color: #fff; font-size: 13.5px; margin-bottom: 4px;">Tool Automation</strong>
+          <span class="code-badge" style="margin-bottom: 6px;">Python / CLI Hooks</span>
+          <p style="font-size: 11.5px; color: var(--text-muted);">Hook parsers, linters, test runners, or headless PDF printers directly into the flow.</p>
         </div>
 
         <div class="card">
-          <div style="font-size: 24px; margin-bottom: 8px;">4️⃣</div>
-          <strong style="color: #fff; font-size: 14px; margin-bottom: 4px;">Structured Outputs</strong>
-          <span class="code-badge" style="margin-bottom: 8px;">MD + HTML + PDF</span>
-          <p style="font-size: 12px; color: var(--text-muted);">Produce clean tables, gap matrices, and exportable artifacts for stakeholders.</p>
+          <div style="font-size: 22px; margin-bottom: 6px;">4️⃣</div>
+          <strong style="color: #fff; font-size: 13.5px; margin-bottom: 4px;">Structured Outputs</strong>
+          <span class="code-badge" style="margin-bottom: 6px;">MD + HTML + PDF</span>
+          <p style="font-size: 11.5px; color: var(--text-muted);">Produce clean tables, gap matrices, and exportable artifacts for stakeholders.</p>
         </div>
       </div>
 
-      <div class="card" style="background: rgba(15, 23, 42, 0.7); border-color: var(--border-card); padding: 14px 20px;">
-        <strong style="color: var(--accent); font-size: 13.5px;">💡 Ideas for Your Next Team Agents:</strong>
-        <div style="display: flex; gap: 20px; font-size: 12.5px; color: #cbd5e1; margin-top: 6px;">
+      <div class="card" style="background: rgba(15, 23, 42, 0.7); border-color: var(--border-card); padding: 12px 18px;">
+        <strong style="color: var(--accent); font-size: 13px;">💡 Next-Gen Agent Ideas for Your Engineering Team:</strong>
+        <div style="display: flex; gap: 16px; font-size: 12px; color: #cbd5e1; margin-top: 4px;">
           <span>• <strong>Test Case Reviewer:</strong> Audit BDD feature files against user stories.</span>
-          <span>• <strong>PR / Code Quality Agent:</strong> Enforce Playwright/TypeScript best practices.</span>
+          <span>• <strong>PR / Code Quality Agent:</strong> Enforce Playwright/TypeScript patterns.</span>
           <span>• <strong>Defect Triage Agent:</strong> Classify bug logs against STLC severity rubrics.</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SLIDE 9: SUMMARY & Q&A -->
-  <div class="slide hero-slide" id="slide-9">
+  <!-- SLIDE 10: SUMMARY & DEMO LINKS -->
+  <div class="slide hero-slide" id="slide-10">
     <div class="hero-pill">
       <span>✨</span> WRAP-UP & DEMO
     </div>
-    <h1 class="hero-title" style="font-size: 44px;">Ready to Build Next-Gen Agents?</h1>
+    <h1 class="hero-title" style="font-size: 42px;">Experience the Screener Live</h1>
     <p class="hero-desc">
-      The candidate screener proves how custom AI agents can eliminate tedious manual toil, ensure rigorous mathematical consistency, and elevate engineering standards.
+      The candidate screener proves how custom AI agents eliminate manual screening toil, enforce rigorous mathematical consistency, and elevate engineering hiring.
     </p>
-    <div style="display: flex; gap: 16px; margin-top: 10px;">
-      <a href="candidate_screening_report_2026-08-29.pdf" target="_blank" class="btn btn-primary" style="text-decoration: none; padding: 12px 24px; font-size: 14px;">
+    <div style="display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap; justify-content: center;">
+      <a href="https://candidate-screener-agent.streamlit.app" target="_blank" class="btn btn-primary" style="text-decoration: none; padding: 10px 20px; font-size: 13.5px;">
+        🌐 Open Streamlit Cloud App
+      </a>
+      <a href="candidate_screening_report_2026-09-05.pdf" target="_blank" class="btn" style="text-decoration: none; padding: 10px 20px; font-size: 13.5px;">
         📄 Open Generated PDF Report
       </a>
-      <a href="CANDIDATE_SCREENER_PROJECT_GUIDE.md" class="btn" style="text-decoration: none; padding: 12px 24px; font-size: 14px;">
-        📖 Read Full Implementation Guide
+      <a href="CANDIDATE_SCREENER_PROJECT_GUIDE.md" class="btn" style="text-decoration: none; padding: 10px 20px; font-size: 13.5px;">
+        📖 Read Architecture Playbook
       </a>
     </div>
-    <div style="margin-top: 20px; font-size: 14px; color: #64748b;">
-      Press <strong>Right Arrow (→)</strong> or <strong>Space</strong> to navigate • <strong>P</strong> to print slides
+    <div style="margin-top: 14px; font-size: 13px; color: #64748b;">
+      Press <strong>Right Arrow (→)</strong> or <strong>Space</strong> to navigate • <strong>P</strong> to export presentation slides as PDF
     </div>
   </div>
 
@@ -945,7 +1015,7 @@
   <div class="nav-left">
     <span style="font-weight: 700; color: #fff;">Candidate Screener Demo</span>
     <span>|</span>
-    <span id="slideIndicator">Slide 1 of 9</span>
+    <span id="slideIndicator">Slide 1 of 10</span>
   </div>
   <div class="nav-controls">
     <button class="btn" id="prevBtn">← Previous</button>
@@ -956,7 +1026,7 @@
 
 <script>
   let currentSlide = 1;
-  const totalSlides = 9;
+  const totalSlides = 10;
 
   function updateSlide(newSlide) {
     if (newSlide < 1 || newSlide > totalSlides) return;
