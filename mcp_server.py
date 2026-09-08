@@ -385,6 +385,10 @@ if __name__ == "__main__":
     if args.transport == "sse":
         mcp.settings.host = args.host
         mcp.settings.port = args.port
+        if hasattr(mcp.settings, "transport_security") and mcp.settings.transport_security:
+            mcp.settings.transport_security.enable_dns_rebinding_protection = False
+            mcp.settings.transport_security.allowed_hosts = ["*"]
+            mcp.settings.transport_security.allowed_origins = ["*"]
         print(f"🚀 Candidate Screener MCP Server listening on http://{args.host}:{args.port}/sse", file=sys.stderr)
         mcp.run(transport="sse")
     else:
