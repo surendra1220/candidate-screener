@@ -378,7 +378,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AI Candidate Screener MCP Server")
     parser.add_argument("--transport", choices=["stdio", "sse"], default="stdio", help="Transport mode: stdio (default) or sse")
     parser.add_argument("--host", default="0.0.0.0", help="Host address for SSE transport (default: 0.0.0.0)")
-    parser.add_argument("--port", type=int, default=8000, help="Port for SSE transport (default: 8000)")
+    default_port = int(os.environ.get("PORT", 8000))
+    parser.add_argument("--port", type=int, default=default_port, help=f"Port for SSE transport (default: {default_port})")
     args = parser.parse_args()
 
     if args.transport == "sse":
