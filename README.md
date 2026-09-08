@@ -1,4 +1,14 @@
-# 🤖 Candidate Screener AI Agent — Team Workspace
+---
+title: Candidate Screener MCP Server
+emoji: 🎯
+colorFrom: indigo
+colorTo: cyan
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
+# 🤖 Candidate Screener AI Agent & MCP Server
 
 > **An autonomous, evidence-driven AI screening agent for technical engineering recruitment (SDET, QA, Full-Stack, & AI Engineers).**  
 > Eliminates resume keyword padding through strict deliverable verification, mathematical 100-point capacity scoring, and automated audit-ready PDF/HTML reporting.
