@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "candidate-screener": {
+      "command": "python",
+      "args": [
+        "c:/Users/suren/.claude/skills/candidate-screener/mcp_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      }
+    }
+  }
+}
