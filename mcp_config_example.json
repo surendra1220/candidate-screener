@@ -1,8 +1,9 @@
 {
   "mcpServers": {
     "candidate-screener-local": {
-      "command": "python",
+      "command": "py",
       "args": [
+        "-3",
         "c:/Users/suren/.claude/skills/candidate-screener/mcp_server.py"
       ],
       "env": {

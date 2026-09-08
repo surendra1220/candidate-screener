@@ -1,13 +1,17 @@
 {
   "mcpServers": {
-    "candidate-screener": {
-      "command": "python",
+    "candidate-screener-local": {
+      "command": "py",
       "args": [
+        "-3",
         "c:/Users/suren/.claude/skills/candidate-screener/mcp_server.py"
       ],
       "env": {
         "PYTHONIOENCODING": "utf-8"
       }
+    },
+    "candidate-screener-sse": {
+      "url": "http://localhost:8000/sse"
     }
   }
 }

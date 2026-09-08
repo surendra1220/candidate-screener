@@ -382,7 +382,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.transport == "sse":
-        print(f"🚀 Starting Candidate Screener MCP Server on http://{args.host}:{args.port}/sse", file=sys.stderr)
+        mcp.settings.host = args.host
+        mcp.settings.port = args.port
+        print(f"🚀 Candidate Screener MCP Server listening on http://{args.host}:{args.port}/sse", file=sys.stderr)
         mcp.run(transport="sse")
     else:
         mcp.run(transport="stdio")
