@@ -46,12 +46,30 @@ st.markdown("""
         font-size: 1.05rem;
         margin-bottom: 1.5rem;
     }
-    .metric-card {
-        background: #1e293b;
-        border: 1px solid #334155;
-        border-radius: 10px;
-        padding: 15px;
-        text-align: center;
+    .status-missing {
+        color: #dc2626 !important;
+        font-weight: 800 !important;
+    }
+    .status-claimed {
+        color: #2563eb !important;
+        font-weight: 800 !important;
+    }
+    .status-partial {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+    }
+    .status-matched {
+        color: #16a34a !important;
+        font-weight: 800 !important;
+    }
+    .mandatory-badge {
+        background-color: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 12px;
     }
     .badge-pass {
         background-color: #dcfce7;
@@ -236,23 +254,6 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
     exp_years = extract_years_experience(text)
     lower_text = text.lower()
 
-    # Rule 1: Experience Gate (<6 yrs)
-    if 0 < exp_years < 6.0:
-        return {
-            "name": name,
-            "target_role": role_title,
-            "years_exp": exp_years,
-            "mandatory": {k: ("Missing", "Gate Failed: Total experience under 6.0 years cutoff.") for k in mandatory_weights},
-            "good_to_have": {k: ("Missing", "Gate Failed: Evaluated 0 due to experience cutoff.") for k in good_weights},
-            "mandatory_score": 0.0,
-            "good_score": 0.0,
-            "exp_score": 0.0,
-            "raw_score": 0.0,
-            "final_score": 0.0,
-            "verdict": "Screening Failed (Disqualified)",
-            "override_note": f"Rule #1 Hard Gate Triggered: Total experience {exp_years:.1f} yrs < 6.0 yrs hard cutoff."
-        }
-
     skill_keywords = {
         "JavaScript / TypeScript": ["javascript", "typescript", "js", "ts", "es6", "node"],
         "Python": ["python", "pytest", "django", "flask"],
@@ -287,7 +288,7 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
                 factor = 1.00
                 evidence = f"Demonstrated in project deliverables ({', '.join(matched_kw[:2])})"
             else:
-                status = "Claimed but unevidenced"
+                status = "Claimed not evidenced"
                 factor = 0.30
                 evidence = f"Listed in skills/summary without detailed deliverable ({', '.join(matched_kw[:2])})"
         else:
@@ -316,8 +317,13 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
         good_score += points
         good_results[skill] = (status, evidence)
 
+    # Experience fit calculation (proportional score without hard fail)
     if 6.0 <= exp_years <= 10.0:
         exp_score = 5.0
+    elif 4.0 <= exp_years < 6.0:
+        exp_score = 4.0
+    elif 0.0 < exp_years < 4.0:
+        exp_score = 3.0
     elif 10.0 < exp_years <= 12.0:
         exp_score = 3.0
     elif exp_years > 12.0:
@@ -517,7 +523,7 @@ def build_pdf_report(date_str: str, candidate_results: list, file_names: list, a
 
         pdf.ln(8)
 
-        # 2) Gap Matrix
+        # 2) Gap Matrix with Color Standards
         pdf.set_font("Helvetica", "B", 12)
         pdf.set_text_color(30, 58, 138)
         pdf.cell(0, 7, "2) 4-Tier Evidence Gap Matrix")
@@ -530,7 +536,7 @@ def build_pdf_report(date_str: str, candidate_results: list, file_names: list, a
             pdf.cell(190, 6, f"Candidate: {sanitize(c['name'])}  |  Score: {c['final_score']}/100  |  {sanitize(c['verdict'])}", border=1, fill=True)
             pdf.ln(6)
 
-            gw = [42, 50, 20, 26, 52]
+            gw = [42, 50, 20, 28, 50]
             gh = ["Skill / Area", "Expectation", "Type", "Status", "Evidence"]
             pdf.set_fill_color(241, 245, 249)
             pdf.set_text_color(71, 85, 105)
@@ -539,20 +545,38 @@ def build_pdf_report(date_str: str, candidate_results: list, file_names: list, a
                 pdf.cell(w, 5, h, border=1, fill=True)
             pdf.ln(5)
 
-            pdf.set_font("Helvetica", size=7)
-            pdf.set_text_color(30, 41, 59)
-            
             all_skills = list(c.get("mandatory", {}).items()) + list(c.get("good_to_have", {}).items())
             for k, v in all_skills:
                 req_type = "Mandatory" if k in c.get("mandatory", {}) else "Good-to-have"
                 status_text = v[0]
                 evidence_text = v[1] if len(v) > 1 else ""
                 
+                pdf.set_text_color(30, 41, 59)
+                pdf.set_font("Helvetica", size=7)
                 pdf.cell(gw[0], 5, sanitize(k[:24]), border=1)
                 pdf.cell(gw[1], 5, sanitize(k[:28]), border=1)
                 pdf.cell(gw[2], 5, req_type, border=1)
-                pdf.cell(gw[3], 5, sanitize(status_text[:14]), border=1)
-                pdf.cell(gw[4], 5, sanitize(evidence_text[:30]), border=1)
+                
+                # Gap Matrix Status Color Coding in PDF
+                if "Matched" in status_text:
+                    pdf.set_text_color(22, 163, 74)   # Bold Green
+                    pdf.set_font("Helvetica", "B", 7)
+                elif "Partial" in status_text:
+                    pdf.set_text_color(234, 88, 12)  # Bold Orange
+                    pdf.set_font("Helvetica", "B", 7)
+                elif "Claimed" in status_text:
+                    pdf.set_text_color(37, 99, 235)   # Bold Blue
+                    pdf.set_font("Helvetica", "B", 7)
+                else:  # Missing
+                    pdf.set_text_color(220, 38, 38)  # Bold Red
+                    pdf.set_font("Helvetica", "B", 7)
+                    
+                pdf.cell(gw[3], 5, sanitize(status_text[:16]), border=1)
+                
+                # Reset for evidence column
+                pdf.set_text_color(30, 41, 59)
+                pdf.set_font("Helvetica", size=7)
+                pdf.cell(gw[4], 5, sanitize(evidence_text[:28]), border=1)
                 pdf.ln(5)
 
             pdf.ln(4)
@@ -581,6 +605,16 @@ def build_pdf_report(date_str: str, candidate_results: list, file_names: list, a
     except Exception:
         return b""
 
+def format_status_html(status_text: str) -> str:
+    if "Matched" in status_text:
+        return f"<strong style='color: #16a34a;'>{status_text}</strong>"
+    elif "Partial" in status_text:
+        return f"<strong style='color: #ea580c;'>{status_text}</strong>"
+    elif "Claimed" in status_text:
+        return f"<strong style='color: #2563eb;'>{status_text}</strong>"
+    else:
+        return f"<strong style='color: #dc2626;'>{status_text}</strong>"
+
 def generate_report_files(timestamp: str, candidate_results: list, file_names: list, active_jd_display: str):
     report_sub = REPORTS_DIR / timestamp
     report_sub.mkdir(parents=True, exist_ok=True)
@@ -608,7 +642,7 @@ def generate_report_files(timestamp: str, candidate_results: list, file_names: l
         missing_str = ", ".join(missing_m) if missing_m else "—"
         partial_m = [k for k, v in c["mandatory"].items() if v[0] == "Partial match"]
         partial_str = ", ".join(partial_m) if partial_m else "—"
-        claimed_m = [k for k, v in c["mandatory"].items() if v[0] == "Claimed but unevidenced"]
+        claimed_m = [k for k, v in c["mandatory"].items() if "Claimed" in v[0]]
         claimed_str = ", ".join(claimed_m) if claimed_m else "—"
         md_lines.append(f"| {idx} | **{c['name']}** | **{c['final_score']} / 100** | {c['verdict']} | {c['years_exp']} yrs | {missing_str} | {partial_str} | {claimed_str} |")
 
@@ -642,7 +676,7 @@ def generate_report_files(timestamp: str, candidate_results: list, file_names: l
     md_path = report_sub / f"candidate_screening_report_{date_str}.md"
     md_path.write_text(md_content, encoding="utf-8")
 
-    # HTML
+    # HTML with Status Colors
     html_lines = [
         "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'>",
         "<title>Candidate Screening Report</title>",
@@ -656,6 +690,10 @@ def generate_report_files(timestamp: str, candidate_results: list, file_names: l
         "  table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 10.5px; }",
         "  th, td { border: 1px solid #cbd5e1; padding: 5px 7px; text-align: left; vertical-align: top; }",
         "  th { background-color: #f1f5f9; color: #0f172a; font-weight: 600; }",
+        "  .status-missing { color: #dc2626; font-weight: 700; }",
+        "  .status-claimed { color: #2563eb; font-weight: 700; }",
+        "  .status-partial { color: #ea580c; font-weight: 700; }",
+        "  .status-matched { color: #16a34a; font-weight: 700; }",
         "  .badge-pass { background-color: #dcfce7; color: #166534; padding: 2px 5px; border-radius: 4px; font-weight: 600; font-size: 10px; }",
         "  .badge-fail { background-color: #fee2e2; color: #991b1b; padding: 2px 5px; border-radius: 4px; font-weight: 600; font-size: 10px; }",
         "  .badge-warn { background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: 600; font-size: 10px; }",
@@ -670,7 +708,7 @@ def generate_report_files(timestamp: str, candidate_results: list, file_names: l
         missing_str = ", ".join(missing_m) if missing_m else "—"
         partial_m = [k for k, v in c["mandatory"].items() if v[0] == "Partial match"]
         partial_str = ", ".join(partial_m) if partial_m else "—"
-        claimed_m = [k for k, v in c["mandatory"].items() if v[0] == "Claimed but unevidenced"]
+        claimed_m = [k for k, v in c["mandatory"].items() if "Claimed" in v[0]]
         claimed_str = ", ".join(claimed_m) if claimed_m else "—"
         badge_cls = "badge-pass" if "Strong" in c["verdict"] else ("badge-warn" if "Potential" in c["verdict"] else "badge-fail")
         html_lines.append(f"<tr><td>{idx}</td><td><strong>{c['name']}</strong></td><td><strong>{c['final_score']} / 100</strong></td><td><span class='{badge_cls}'>{c['verdict']}</span></td><td>{c['years_exp']} yrs</td><td>{missing_str}</td><td>{partial_str}</td><td>{claimed_str}</td></tr>")
@@ -687,10 +725,12 @@ def generate_report_files(timestamp: str, candidate_results: list, file_names: l
         html_lines.append("<table><thead><tr><th>Skill / Area</th><th>JD Expectation</th><th>Requirement</th><th>Status</th><th>Evidence (Key Line / Deliverable)</th></tr></thead><tbody>")
         for k, v in c["mandatory"].items():
             exp_text = DEFAULT_MANDATORY_WEIGHTS.get(k, (0, "Mandatory Technical Skill"))[1]
-            html_lines.append(f"<tr><td><strong>{k}</strong></td><td>{exp_text}</td><td>Mandatory</td><td>{v[0]}</td><td>{v[1]}</td></tr>")
+            status_cls = "status-matched" if "Matched" in v[0] else ("status-partial" if "Partial" in v[0] else ("status-claimed" if "Claimed" in v[0] else "status-missing"))
+            html_lines.append(f"<tr><td><strong>{k}</strong></td><td>{exp_text}</td><td>Mandatory</td><td><span class='{status_cls}'>{v[0]}</span></td><td>{v[1]}</td></tr>")
         for k, v in c["good_to_have"].items():
             exp_text = DEFAULT_GOOD_TO_HAVE_WEIGHTS.get(k, (0, "Preferred Skill"))[1]
-            html_lines.append(f"<tr><td><strong>{k}</strong></td><td>{exp_text}</td><td>Good-to-have</td><td>{v[0]}</td><td>{v[1]}</td></tr>")
+            status_cls = "status-matched" if "Matched" in v[0] else ("status-partial" if "Partial" in v[0] else ("status-claimed" if "Claimed" in v[0] else "status-missing"))
+            html_lines.append(f"<tr><td><strong>{k}</strong></td><td>{exp_text}</td><td>Good-to-have</td><td><span class='{status_cls}'>{v[0]}</span></td><td>{v[1]}</td></tr>")
         html_lines.append("</tbody></table>")
 
     html_lines.append("<h2>3) Candidate Details</h2>")
@@ -733,38 +773,62 @@ def generate_report_files(timestamp: str, candidate_results: list, file_names: l
 
 # ================= UI LAYOUT =================
 st.markdown('<div class="main-header">🎯 AI Candidate Screener Portal</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Autonomous, evidence-driven ATS candidate evaluation powered by strict deliverable verification and rubric scoring.</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Evidence-driven ATS candidate evaluation comparing profile deliverables against Job Description requirements.</div>', unsafe_allow_html=True)
+
+st.info("📌 **Mandatory Input Notice:** Both **Job Description** and **Candidate Profile(s)** are mandatory for candidate screening. You may use the pre-loaded default SDET JD or upload a custom role JD.")
 
 col1, col2 = st.columns([1, 1], gap="large")
 
 with col1:
-    st.subheader("📄 1. Target Job Description (Optional)")
-    custom_jd_upload = st.file_uploader(
-        "Upload Custom Job Description (Leave empty for default SDET JD)",
-        type=["pdf", "docx", "txt", "md"],
-        help="Optional: Upload a role-specific JD to screen against custom requirements."
+    st.markdown("### 📄 1. Target Job Description <span class='mandatory-badge'>Mandatory</span>", unsafe_allow_html=True)
+    jd_choice = st.radio(
+        "Select Job Description Source:",
+        options=["Use Active Default SDET JD (6–10 Yrs)", "Upload Custom Job Description Document"],
+        index=0,
+        help="Both Job Description and Candidate Profiles are mandatory inputs."
     )
-    if custom_jd_upload:
-        st.success(f"✅ Using Custom JD: **{custom_jd_upload.name}**")
+    
+    custom_jd_upload = None
+    if jd_choice == "Upload Custom Job Description Document":
+        custom_jd_upload = st.file_uploader(
+            "Upload Custom Job Description Document *",
+            type=["pdf", "docx", "txt", "md"],
+            help="Mandatory: Upload a custom role JD to screen against."
+        )
+        if custom_jd_upload:
+            st.success(f"✅ Active Custom JD: **{custom_jd_upload.name}**")
+        else:
+            st.warning("⚠️ Please upload a custom Job Description file to proceed.")
     else:
-        st.info("ℹ️ Using Active Ground Truth: **Default SDET JD (6–10 Yrs)**")
+        st.success("✅ Active Ground Truth: **Pre-loaded SDET Job Description (6–10 Yrs)**")
+        with st.expander("👁️ View Active Default SDET Requirements", expanded=False):
+            st.markdown("""
+            - **Mandatory Skills:** JavaScript/TypeScript, Python, Cypress, Playwright, Pytest, Automation Framework Design, UI/Web Testing + BDD, API Testing, STLC & Strategy, Test Management (Jira/ALM), Agile/Kanban, AI Solution Testing, Agentic AI.
+            - **Good-to-Have Bonus:** AWS/Azure Cloud, CI/CD Integration, Monitoring (Splunk/Grafana), No-Code Tools, Pharma Domain.
+            """)
 
 with col2:
-    st.subheader("👥 2. Candidate Profiles (Required)")
+    st.markdown("### 👥 2. Candidate Profiles <span class='mandatory-badge'>Mandatory</span>", unsafe_allow_html=True)
     uploaded_resumes = st.file_uploader(
-        "Upload Candidate Resumes",
+        "Upload Candidate Resumes * (PDF, DOCX, DOC, TXT)",
         type=["pdf", "docx", "doc", "txt"],
         accept_multiple_files=True,
-        help="Upload one or multiple candidate resume files."
+        help="Mandatory: Upload one or more candidate profiles to evaluate."
     )
     if uploaded_resumes:
-        st.write(f"📁 Selected **{len(uploaded_resumes)}** candidate resume(s)")
+        st.success(f"✅ Selected **{len(uploaded_resumes)}** candidate resume file(s)")
+    else:
+        st.warning("⚠️ Please upload at least one candidate profile to proceed with screening.")
 
 st.divider()
 
-if st.button("🚀 Screen Candidate Profiles", type="primary", use_container_width=True, disabled=not uploaded_resumes):
+# Check ready condition
+is_jd_ready = (jd_choice == "Use Active Default SDET JD (6–10 Yrs)") or (custom_jd_upload is not None)
+is_ready = bool(uploaded_resumes) and is_jd_ready
+
+if st.button("🚀 Screen Candidate Profiles", type="primary", use_container_width=True, disabled=not is_ready):
     try:
-        with st.spinner("⏳ Ingesting profiles, parsing evidence, and calculating rubric overrides..."):
+        with st.spinner("⏳ Ingesting profiles, parsing evidence against JD, and calculating rubric scores..."):
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             upload_sub = RESUMES_DIR / timestamp
             upload_sub.mkdir(parents=True, exist_ok=True)
@@ -832,19 +896,40 @@ if "results" in st.session_state:
         for c in results:
             st.markdown(f"• **{c['name']}:** {c['verdict']} — *{c['override_note']}*")
 
-    # Gap Matrices
+    # Gap Matrices with Legend and Colors
     st.subheader("📊 4-Tier Evidence Gap Matrices")
+    st.markdown("""
+    **Gap Matrix Status Legend:**
+    - <span class='status-matched'>■ Matched (1.00×)</span> — Verified in concrete project deliverables.
+    - <span class='status-partial'>■ Partial Match (0.60×)</span> — Adjacent technology or minimal exposure.
+    - <span class='status-claimed'>■ Claimed not evidenced (0.30×)</span> — Listed in skills/summary without project deliverable.
+    - <span class='status-missing'>■ Missing (0.00×)</span> — No evidence found in profile.
+    """, unsafe_allow_html=True)
+
     for c in results:
         with st.expander(f"Candidate: {c['name']} — Score: {c['final_score']} / 100", expanded=False):
-            st.markdown(f"**Tag Line:** {c['verdict']}")
+            st.markdown(f"**Verdict:** {c['verdict']}")
             st.markdown(f"**Score Breakdown:** Mandatory `{c['mandatory_score']}/85` | Bonus `{c['good_score']}/10` | Experience Fit `{c['exp_score']}/5` &rarr; **Total: `{c['final_score']}/100`**")
             
-            gap_data = []
+            # Formatted HTML Table with Colors
+            matrix_html = [
+                "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;'>",
+                "<thead><tr style='background: #f1f5f9; text-align: left;'>",
+                "<th style='padding: 8px; border: 1px solid #cbd5e1;'>Skill / Area</th>",
+                "<th style='padding: 8px; border: 1px solid #cbd5e1;'>Requirement</th>",
+                "<th style='padding: 8px; border: 1px solid #cbd5e1;'>Status</th>",
+                "<th style='padding: 8px; border: 1px solid #cbd5e1;'>Evidence Snippet</th>",
+                "</tr></thead><tbody>"
+            ]
             for k, v in c["mandatory"].items():
-                gap_data.append({"Skill / Area": k, "Requirement": "Mandatory", "Status": v[0], "Evidence": v[1]})
+                status_formatted = format_status_html(v[0])
+                matrix_html.append(f"<tr><td style='padding: 6px; border: 1px solid #cbd5e1;'><strong>{k}</strong></td><td style='padding: 6px; border: 1px solid #cbd5e1;'>Mandatory</td><td style='padding: 6px; border: 1px solid #cbd5e1;'>{status_formatted}</td><td style='padding: 6px; border: 1px solid #cbd5e1;'>{v[1]}</td></tr>")
             for k, v in c["good_to_have"].items():
-                gap_data.append({"Skill / Area": k, "Requirement": "Good-to-have", "Status": v[0], "Evidence": v[1]})
-            st.dataframe(gap_data, use_container_width=True)
+                status_formatted = format_status_html(v[0])
+                matrix_html.append(f"<tr><td style='padding: 6px; border: 1px solid #cbd5e1;'><strong>{k}</strong></td><td style='padding: 6px; border: 1px solid #cbd5e1;'>Good-to-have</td><td style='padding: 6px; border: 1px solid #cbd5e1;'>{status_formatted}</td><td style='padding: 6px; border: 1px solid #cbd5e1;'>{v[1]}</td></tr>")
+            matrix_html.append("</tbody></table>")
+            
+            st.markdown("".join(matrix_html), unsafe_allow_html=True)
 
     # Export Section
     st.subheader("📥 Export & Download Audit Reports")

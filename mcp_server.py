@@ -128,23 +128,6 @@ def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
     exp_years = extract_years_experience(text)
     lower_text = text.lower()
 
-    # Rule 1: Experience Gate (<6 yrs)
-    if 0 < exp_years < 6.0:
-        return {
-            "name": name,
-            "target_role": role_title,
-            "years_exp": exp_years,
-            "mandatory": {k: ("Missing", "Gate Failed: Total experience under 6.0 years hard cutoff.") for k in mandatory_weights},
-            "good_to_have": {k: ("Missing", "Gate Failed: Evaluated 0 due to experience cutoff.") for k in good_weights},
-            "mandatory_score": 0.0,
-            "good_score": 0.0,
-            "exp_score": 0.0,
-            "raw_score": 0.0,
-            "final_score": 0.0,
-            "verdict": "Screening Failed (Disqualified)",
-            "override_note": f"Rule #1 Hard Gate Triggered: Total experience {exp_years:.1f} yrs < 6.0 yrs hard cutoff."
-        }
-
     skill_keywords = {
         "JavaScript / TypeScript": ["javascript", "typescript", "js", "ts", "es6", "node"],
         "Python": ["python", "pytest", "django", "flask"],
@@ -179,7 +162,7 @@ def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
                 factor = 1.00
                 evidence = f"Demonstrated in project deliverables ({', '.join(matched_kw[:2])})"
             else:
-                status = "Claimed but unevidenced"
+                status = "Claimed not evidenced"
                 factor = 0.30
                 evidence = f"Listed in skills/summary without detailed deliverable ({', '.join(matched_kw[:2])})"
         else:
@@ -208,8 +191,13 @@ def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
         good_score += points
         good_results[skill] = (status, evidence)
 
+    # Experience fit calculation
     if 6.0 <= exp_years <= 10.0:
         exp_score = 5.0
+    elif 4.0 <= exp_years < 6.0:
+        exp_score = 4.0
+    elif 0.0 < exp_years < 4.0:
+        exp_score = 3.0
     elif 10.0 < exp_years <= 12.0:
         exp_score = 3.0
     elif exp_years > 12.0:
@@ -368,10 +356,11 @@ Candidate Resume:
 {resume_text}
 
 Rules:
-1. Experience Gate: Must have >= 6.0 years of experience (Reject immediately if under 6.0).
+1. Compare candidate profile evidence directly against the Job Description (no arbitrary experience cutoff).
 2. 4-Tier Verification: Matched (1.0x, concrete deliverable), Partial (0.6x), Claimed (0.3x, bare keyword list), Missing (0.0x).
-3. Hard Gap Rule: If both AI Solution Testing & Agentic AI are missing, cap score < 60.
-4. Output all 7 standardized sections: Screened Files, Active JD, Candidates Ranked, Ranking Table, Key Takeaways, Gap Matrix, Candidate Details.
+3. Status Color Standard: Missing (Bold Red), Claimed not evidenced (Bold Blue), Partial Match (Bold Orange), Matched (Bold Green).
+4. Hard Gap Rule: If both AI Solution Testing & Agentic AI are missing, cap score < 60.
+5. Output all 7 standardized sections: Screened Files, Active JD, Candidates Ranked, Ranking Table, Key Takeaways, Gap Matrix, Candidate Details.
 """
 
 if __name__ == "__main__":

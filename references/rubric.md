@@ -1,15 +1,18 @@
-# Scoring Rubric — SDET Screener
+# Scoring Rubric — Candidate Screener
 
 ## Capacity
 **Total = MandatorySkills (max 85) + GoodToHaveBonus (max 10) + ExperienceFit (max 5) = 100**
-Per-skill status points (applied same way to mandatory and good-to-have skill):
 
-| Status | Points (× weight) |
-|---|---|
-| Matched (evidenced) | 1.00 × weight |
-| Partial match | 0.60 × weight |
-| Claimed but unevidenced | 0.30 × weight |
-| Missing | 0 |
+Per-skill status points (applied same way to mandatory and good-to-have skills):
+
+| Status | Weight Factor | Color Standard (UI / Reports) |
+|---|---|---|
+| **Matched** (evidenced in deliverables) | **1.00 × weight** | **Bold Green** (`#16a34a` / `rgb(22, 163, 74)`) |
+| **Partial match** (adjacent / minimal use) | **0.60 × weight** | **Bold Orange** (`#ea580c` / `rgb(234, 88, 12)`) |
+| **Claimed but unevidenced** (keyword list only) | **0.30 × weight** | **Bold Blue** (`#2563eb` / `rgb(37, 99, 235)`) |
+| **Missing** (not evidenced) | **0.00 × weight** | **Bold Red** (`#dc2626` / `rgb(220, 38, 38)`) |
+
+---
 
 ## Mandatory skills & weights (sums to 85)
 
@@ -29,7 +32,9 @@ Per-skill status points (applied same way to mandatory and good-to-have skill):
 | 12 | AI-powered solution testing (testing AI solutions) | 6 |
 | 13 | Agentic AI (MCP, RAG, Prompting; building & testing solutions) | 4 |
 
-**Note on languages/frameworks:** the JD says "JavaScript **or** Python" and "Cypress/Playwright/Pytest **or equivalent**" — a candidate is strong if ≥1 core language is evidenced and at least one of the three frameworks is evidenced. A second language/framework is a bonus, not a double requirement. Still, score each individual skill honestly via its own weight+status.
+**Note on languages/frameworks:** Candidates are evaluated directly on evidenced skills matching the JD. A candidate is strong if ≥1 core language is evidenced and at least one primary framework is evidenced.
+
+---
 
 ## Good-to-have bonus (max 10)
 
@@ -41,31 +46,35 @@ Per-skill status points (applied same way to mandatory and good-to-have skill):
 | No-code / low-code tools (MABL, Test Complete) | 1 |
 | Pharma / domain industry experience | 2 |
 
+---
+
 ## Experience fit (max 5)
 
-| Years (total experience per resume) | Points | Note |
+*Evaluated based on overall seniority alignment without hard-failing or disqualifying candidates with fewer years.*
+
+| Total Years of Experience | Points | Seniority Evaluation |
 |---|---|---|
-| < 6 | **HARD FAIL → Screening Failed** | Under-senior for a 6–10 yr role; applied before scoring |
-| 6–10 | 5 | Sweet spot |
-| 11–12 | 3 | Upper edge — passes on experience |
-| > 12 | 2 | Over-qualified flag — still passes on experience |
+| < 4 years | 3 | Developing / Early-career (evaluated purely on skill deliverables) |
+| 4–6 years | 4 | Mid-Senior track |
+| 6–10 years | 5 | Target sweet spot |
+| 11–12 years | 3 | Upper seniority |
+| > 12 years | 2 | Extensive leadership / architect track |
+
+---
 
 ## Verdict mapping
-| Score | Verdict | Screening result |
+| Score | Verdict | Screening Result |
 |---|---|---|
 | ≥ 80 | **Strong fit** | **Screening Passed** |
-| 60–79 | **Potential fit** | **Screening Passed** (conditional) |
+| 60–79 | **Potential fit** | **Screening Passed** (probes recommended) |
 | 40–59 | **Weak fit** | **Screening Failed** |
 | < 40 | **Reject** | **Screening Failed** |
 
-Any hard-fail / override rule (below) forces **Screening Failed** regardless of score.
+---
 
-## Hard-fail / override rules (apply FIRST; these can down-rank a Pass score, or flag even a high score)
-1. **No evidenced core language** — neither JavaScript/TypeScript nor Python is evidenced anywhere → hard-fail → **Reject**, regardless of score.
-2. **No test-automation framework evidence at all** — none of Cypress/Playwright/Pytest appears in any project/role → **Reject**.
-3. **AI-driven testing entirely missing** (both #12 and #13 = Missing or Claimed-unevidenced) → cap < 60 AND downgrade one verdict tier (Strong→Potential, Potential→Weak). AI / Agentic is a headline & Must-Have of this role.
-4. **Critical mandatory single-component Missing**: UI+API automation both missing → cap at 50.
-5. **Years of experience < 6** (total per resume) → **hard fail → Screening Failed**, applied BEFORE scoring; no score can override. Mention "under-senior for 6–10 yr SDET role".
-6. **Skills padding** — if a candidate lists ≥ 2 major mandatory skills only as claims (no project support), add 1 red flag each; these go in the "claimed but unevidenced" column and drop the verdict one tier if Claimed-count ≥ 3 mandatory skills.
-
-Engine-fit of these rules on each candidate must be shown in section 3 under "Red flags & interview-killers."
+## Content Overrides & Flags (Content-Driven)
+1. **No evidenced core language:** Neither JavaScript/TypeScript nor Python is evidenced in project deliverables $\rightarrow$ **Weak Fit / Reject**.
+2. **No test-automation framework evidence:** None of the required automation frameworks appear in deliverables $\rightarrow$ **Reject**.
+3. **AI-driven testing entirely missing (Rule #3):** Both AI Solution Testing (#12) and Agentic AI (#13) are Missing or Claimed $\rightarrow$ Cap score at $< 60$ and downgrade verdict tier.
+4. **Critical mandatory single-component Missing:** UI + API automation both missing $\rightarrow$ Cap score at 50.
+5. **Skills padding:** If a candidate lists $\ge 2$ mandatory skills only in summary/keywords without deliverable evidence, flag them under Claimed (0.30×) and recommend targeted interview probing.

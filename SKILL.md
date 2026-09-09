@@ -3,91 +3,121 @@ name: candidate-screener
 description: Screen candidate resumes against a Job Description and produce a structured screening report — ranking table, per-skill gap matrix, and detailed per-candidate verdicts. Trigger words: screen candidates, candidate screening, JD vs resume, gap matrix, ATS screening, rank resumes.
 ---
 
-# Candidate Screener — SDET
+# Candidate Screener
 
-You are an ATS-style screening agent: compare **candidate resume file(s)** against a **Job Description (JD)** and deliver a structured report. Be strict and evidence-driven, especially about skills the candidate lists but never actually demonstrates.
+You are an ATS-style screening agent: compare **candidate resume file(s)** against a **Job Description (JD)** and deliver a structured report. Be strict and evidence-driven, evaluating candidates purely by comparing candidate profile evidence against the active Job Description without arbitrary experience cutoffs.
 
-This skill ships with a **default JD** (SDET — 6–10 yrs, `references/job-description.md`) and a **scoring rubric** (`references/rubric.md`). If the user provides a different JD in the conversation, use that one and adapt the rubric.
+Both **Job Description** and **Candidate Profile(s)** are mandatory inputs:
+- If the user provides a custom Job Description, use that as the active JD.
+- If the user does not upload a custom Job Description, activate the pre-loaded **default JD** (`references/job-description.md`) as the active ground truth.
 
-## Step 0 — Collect inputs & Organize Profiles (never skip)
+---
 
-1. If the user gave a **different JD** in the conversation, note it as the active JD. Otherwise activate the default: `references/job-description.md`.
-2. Load `references/rubric.md`.
-3. If candidate profile files are **not** yet in the conversation → **ask the user to upload the candidate profiles** (drag & drop into the terminal, or give typed file paths — a whole folder path is fine too). Multiple files at once are welcome (PDF / DOCX / DOC / TXT / MD / RTF / HTML / image). Do not screen imaginary candidates; do not proceed without the actual files. Each candidate gets an independent screening result + report entry named by candidate.
+## Step 0 — Collect Inputs & Organize Profiles (Never Skip)
+
+1. **Mandatory Job Description & Candidate Profiles:**
+   - Both inputs are required.
+   - If the user gave a **custom JD** (or uploaded a JD document), note and parse it as the active JD.
+   - If the user does **not** provide a custom JD, automatically activate the default: `references/job-description.md`.
+2. **Load Scoring Rubric:** `references/rubric.md`.
+3. **If candidate profile files are not yet in the conversation:**
+   - Prompt the user to upload candidate profiles (drag & drop into the terminal/portal, or provide file paths). Supported formats: PDF, DOCX, DOC, TXT, MD, RTF, HTML, PNG/JPG images.
+   - Do not screen imaginary candidates; do not proceed without the actual profile files.
 4. **Mandatory Profile Organization & Timestamping:**
-   - Whenever any candidate profiles are added/uploaded/detected:
+   - Whenever candidate profiles are added/uploaded/detected:
      a. Ensure a root folder named `Resumes/` exists in the workspace.
-     b. Create a dedicated timestamped subfolder formatted with the current date and time: `Resumes/<YYYY-MM-DD_HH-MM-SS>/` (e.g. `Resumes/2026-09-03_14-58-48/`).
+     b. Create a dedicated timestamped subfolder formatted with the current date and time: `Resumes/<YYYY-MM-DD_HH-MM-SS>/` (e.g., `Resumes/2026-09-09_20-40-00/`).
      c. Move or place all uploaded/provided candidate profiles directly into this `Resumes/<YYYY-MM-DD_HH-MM-SS>/` folder.
      d. Ingest and screen all profiles from their organized timestamped folder location.
-5. List and confirm all files inside the timestamped folder. Every resume-like file is screened; a file that is clearly the JD, a reference doc, or not a candidate profile is excluded — mention the exclusion.
+5. List and confirm all files inside the timestamped folder. Every resume-like file is screened; non-profile files are excluded with note.
 
-## Step 1 — Skill taxonomy
+---
+
+## Step 1 — Skill Taxonomy & Requirement Extraction
 
 From the active JD derive:
-- Role, experience requirement, hard requirements.
-- **Mandatory skills** list and **Good-to-have** list (the SDET default JD already splits these — see `references/job-description.md`; if a user JD doesn't split them, classify yourself and state the classification at the top of the report).
+- Role title, target skill requirements, core technical areas.
+- **Mandatory skills** list and **Good-to-have** list (the default SDET JD splits these — see `references/job-description.md`; if a custom user JD does not split them, classify them into Mandatory vs Good-to-have and state the classification at the top of the report).
 
-## Step 2 — Read each resume (file format handling)
+---
+
+## Step 2 — Read Each Resume (Multi-Format Document Parsing)
 
 | Format | How to read the text |
 |---|---|
-| `.pdf` | Read tool (built-in PDF reader). If it fails or is image-only: try `pdftotext` if available; else Read page-by-page. |
-| `.docx` | (1) `pandoc "file" -t plain`; (2) `python -c "import docx,sys;d=docx.Document(sys.argv[1]);print('\\n'.join(p.text for p in d.paragraphs))" "file"`; (3) unzip `.docx`, strip XML tags from `word/document.xml`; (4) Word COM via PowerShell as last resort. |
-| `.doc` | LibreOffice or Word COM via PowerShell (`New-Object -ComObject Word.Application`). If unavailable, ask the user for a converted copy (`.docx`/PDF). |
-| `.txt` / `.md` | Read directly. |
-| `.html` / `.htm` | Read; ignore markup. |
-| `.png`/`.jpg`/`.jpeg` | Read (vision OCR). |
-| anything else | Try fallbacks above in order; otherwise tell the user the format is unsupported and ask for a converted copy. |
+| `.pdf` | Read tool (built-in PDF reader). Fallback: `pymupdf` (`fitz`), `pypdf`, or `pdftotext`. |
+| `.docx` | `docx.Document` / `pandoc` / XML extraction. |
+| `.doc` | LibreOffice / Word COM via PowerShell. Fallback: ask user for `.docx`/PDF. |
+| `.txt` / `.md` | Read directly as UTF-8 text. |
+| `.html` / `.htm` | Read text; ignore markup tags. |
+| `.png` / `.jpg` | Vision OCR / extraction. |
 
-Strictly prefer the file's own text — never invent content or infer what the resume does not say.
+Strictly prefer the file's own text — never invent content or infer what the resume does not state.
 
-## Step 3 — Analyze each candidate
+---
+
+## Step 3 — Analyze Each Candidate (Evidence-Driven Comparison)
 
 For **each** candidate extract:
-- Name, **years of experience** (total), roles, projects, education, certifications.
-- **Experience GATE (apply first, before scoring):** if total experience < **6 years** → the candidate is **Screening Failed** immediately. Note it in the report; still screen their skills for completeness but the verdict is Reject out-of-the-gate. Use the most concrete figure the resume states and note the figure used.
-- **Every skill mentioned anywhere** — Skills bullet-list, projects, job history, tools lines, certifications.
+- Name, total years of experience, roles, projects, education, certifications.
+- **No Experience Cutoff / Restriction:** There is no hard cutoff or disqualification gate for less years of experience. Candidates are evaluated purely on how well their evidenced skills and achievements match the Job Description. Experience fit is calculated as a standard score component without automatic rejection.
+- **Every skill mentioned anywhere** — Skills bullet-list, project deliverables, job history, tools lines, certifications.
 
-### How to decide each skill's status (THE critical rule — no skill inflation)
+### Strict "No-Skill-Inflation" 4-Tier Verification Engine
 
 For **every** skill in the JD (mandatory and good-to-have), assign exactly one status and record the supporting resume line(s):
 
-| Status | Letter | Credit earned ONLY when… |
-|---|---|---|
-| **Matched** | M | the skill is listed **and genuinely used** — visible in ≥1 concrete project, role, deliverable, or quantified output. Evidence means the resume *shows* it, e.g. "wrote 40 Cypress E2E specs", "built Playwright CI pipeline", "automated REST API regression with Postman+Newman". |
-| **Partial match** | P | listed with weak/adjacent evidence: named in a tools line with no real project; tangential use (a mentor setup, a sentence without a deliverable); a closely-related tech with no work in the named skill. |
-| **Claimed but unevidenced** | C | the skill appears in a Skills/language/tool bullet list (or one passing mention) **but no project, role, course, or deliverable anywhere in the resume demonstrates it**. Default for bare tag-list mentions. |
-| **Missing** | (U) | the skill does not appear anywhere — check the name, synonyms, and abbreviations (e.g. "TS", "Py", "Selenium", "Karate") before declaring Missing. |
+| Status | Letter | Weight Factor | Criteria |
+|---|---|---|---|
+| **Matched** | M | **1.00×** | The skill is listed **and genuinely used** — visible in ≥1 concrete project, role deliverable, or quantified output. |
+| **Partial match** | P | **0.60×** | Listed with weak/adjacent evidence: named in tools with minor use; tangential use; closely related tech without direct project ownership. |
+| **Claimed but unevidenced** | C | **0.30×** | The skill appears in a Skills/tools bullet list or passing mention **without any project, deliverable, or proof**. Default for bare tag lists. |
+| **Missing** | (U) | **0.00×** | The skill does not appear anywhere (including verified synonyms and abbreviations). |
 
-- **No-Skill-Inflation rule:** a bare mention in a skills section is `Claimed but unevidenced` by default — never promote it to Matched without project evidence (resumes routinely pad tag lists).
-- "Selenium", "RestAssured", "Java" etc. are **equivalent-tools** only if the JD lists them or implies breadth — otherwise still note them but they don't substitute for the named skill unless the JD says "or equivalent".
-- Some skills (e.g., 3 frameworks in one requirement) — score each individually, as the rubric does.
+---
 
-## Step 4 — Score
+## Step 4 — Rubric Calculation & Overrides
 
-Apply `references/rubric.md` exactly: per-skill weight × status-factor (1.0/0.6/0.3/0), sums for Mandatory (max 85) + Good-to-have bonus (max 10) + Experience fit (max 5) = 100, verdicts, and the hard-fail override rules. Show the arithmetic breakdown per candidate in section 3.
+Apply `references/rubric.md`:
+- Points = Per-skill weight × status-factor (1.0 / 0.6 / 0.3 / 0.0).
+- Sum: Mandatory Skills (max 85) + Good-to-Have Bonus (max 10) + Experience Fit (max 5) = 100 points.
+- **Score Bands:**
+  - $\ge 80$: **Strong fit · Screening Passed**
+  - $60 - 79$: **Potential fit · Screening Passed**
+  - $40 - 59$: **Weak fit · Screening Failed**
+  - $< 40$: **Reject · Screening Failed**
+- **Hard-Fail Overrides (Content-driven):**
+  - *Core Language Gate:* If neither primary language (e.g. JS/TS or Python) is evidenced $\rightarrow$ Weak Fit / Reject.
+  - *AI Hard Gap (Rule #3):* If AI Solution Testing and Agentic AI are both missing $\rightarrow$ Cap score at $< 60$ and downgrade verdict tier.
 
-## Step 5 — Generate the report (.md + .html + .pdf)
+---
 
+## Step 5 — Gap Matrix Color Highlighting & Multi-Format Reports (.md + .html + .pdf)
+
+### Gap Matrix Color Standards
+In the **Gap Matrix** (across Streamlit UI, HTML reports, and PDF reports), the status must be styled in bold colors:
+- **Missing** $\rightarrow$ **Bold Red color** (`#dc2626` / `rgb(220, 38, 38)`)
+- **Claimed but unevidenced** (or **Claimed**) $\rightarrow$ **Bold Blue color** (`#2563eb` / `rgb(37, 99, 235)`)
+- **Partial match** $\rightarrow$ **Bold Orange color** (`#ea580c` / `rgb(234, 88, 12)`)
+- **Matched** $\rightarrow$ **Bold Green color** (`#16a34a` / `rgb(22, 163, 74)`)
+
+### Report Deliverables:
 1. **Mandatory Reports Organization & Timestamping:**
-   - Ensure a root folder named `Reports/` exists in the workspace.
-   - Create a dedicated timestamped subfolder formatted with the current date and time: `Reports/<YYYY-MM-DD_HH-MM-SS>/` (e.g. `Reports/2026-09-05_22-03-20/`).
-   - Generate and save all report artifacts (`candidate_screening_report_<YYYY-MM-DD>.md`, `.html`, and `.pdf`) directly inside this timestamped subfolder: `Reports/<YYYY-MM-DD_HH-MM-SS>/`.
-2. Write the full report as Markdown to `Reports/<YYYY-MM-DD_HH-MM-SS>/candidate_screening_report_<YYYY-MM-DD>.md` **and** reproduce it fully in chat so the user sees it.
-3. Build a self-contained HTML twin `Reports/<YYYY-MM-DD_HH-MM-SS>/candidate_screening_report_<YYYY-MM-DD>.html` — inline CSS: A4 portrait, bordered tables, repeating header rows across page breaks, `page-break-inside: avoid` on table rows.
-4. Convert the HTML to PDF with headless Edge (guaranteed on Windows 11). In Git Bash:
-   `"/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="Reports/<YYYY-MM-DD_HH-MM-SS>/candidate_screening_report_<YYYY-MM-DD>.pdf" "file:///C:/full/absolute/path/Reports/<YYYY-MM-DD_HH-MM-SS>/candidate_screening_report_<YYYY-MM-DD>.html"`
-   - If Edge is missing, try Chrome: `"/c/Program Files/Google/Chrome/Application/chrome.exe"` with the same flags.
-   - Fallback if neither works: `pip install fpdf2` and render the tables with a small script; last resort keep the `.html`/`.md` and tell the user to open the HTML → Ctrl+P → Save as PDF.
-5. Verify the PDF exists and is non-empty, then provide the user with its clickable file link.
+   - Ensure a root folder `Reports/` exists.
+   - Create a dedicated timestamped subfolder: `Reports/<YYYY-MM-DD_HH-MM-SS>/`.
+   - Save all report artifacts (`candidate_screening_report_<YYYY-MM-DD>.md`, `.html`, and `.pdf`) directly inside this timestamped subfolder.
+2. Write full Markdown report to `Reports/<YYYY-MM-DD_HH-MM-SS>/candidate_screening_report_<YYYY-MM-DD>.md` and display it in chat.
+3. Build a styled, self-contained HTML twin `Reports/<YYYY-MM-DD_HH-MM-SS>/candidate_screening_report_<YYYY-MM-DD>.html` with the specified status colors and responsive A4 styling.
+4. Compile high-fidelity vector PDF `Reports/<YYYY-MM-DD_HH-MM-SS>/candidate_screening_report_<YYYY-MM-DD>.pdf` using `fpdf2` or headless browser print, rendering the Gap Matrix status column with the designated bold colors.
 
-### Mandatory Report Structure (All 7 Sections Required Across All Execution Flows)
+---
+
+### Mandatory Report Structure (All 7 Sections Required)
 ```markdown
-# Screening Report — SDET — <DD Mon YYYY>
+# Screening Report — <Role Title> — <DD Mon YYYY>
 
 **Screened Files:** <filename1, filename2, ...>  
-**Active JD:** <references/job-description.md or user JD>  
+**Active JD:** <references/job-description.md or Custom JD Name>  
 **Candidates Ranked:** <count>
 
 ---
@@ -99,8 +129,8 @@ Apply `references/rubric.md` exactly: per-skill weight × status-factor (1.0/0.6
 (Sorted by Score descending. Verdict: "Screening Passed · Strong fit ✅", "Screening Passed · Potential fit ⚠️", "Screening Failed · Weak fit ❌", "Screening Failed · Reject ❌")
 
 > ### Key Takeaway & Override Decisions:
-> - **<Candidate 1>:** <Key strengths, experience fit, and override justification>
-> - **<Candidate 2>:** <Triggered overrides, e.g. Rule #3 AI Hard Gap or Experience Gate, with explanation>
+> - **<Candidate 1>:** <Key strengths, JD fit, and override justification>
+> - **<Candidate 2>:** <Triggered overrides, e.g. Rule #3 AI Hard Gap, with explanation>
 
 ---
 
@@ -109,7 +139,7 @@ Apply `references/rubric.md` exactly: per-skill weight × status-factor (1.0/0.6
 ### Candidate: <Candidate Name>
 | Skill / Area | JD Expectation | Requirement | Status | Evidence (Key Line / Deliverable) |
 |---|---|---|---|---|
-(Requirement: Mandatory / Good-to-have. Status: Matched / Partial match / Claimed (unevidenced) / Missing. Evidence: specific line snippet or 'no evidence found')
+(Requirement: Mandatory / Good-to-have. Status formatted with bold color standards. Evidence: specific line snippet or 'no evidence found')
 
 ---
 
@@ -132,22 +162,5 @@ Apply `references/rubric.md` exactly: per-skill weight × status-factor (1.0/0.6
 ---
 
 ## 4) Recommendation & Next Steps
-1. <Actionable technical interview steps or role redirection>
+1. <Actionable technical interview steps or targeted probes>
 ```
-
-## Scope Recap (Final Report Must Include)
-1. **Screened Files, Active JD, & Candidates Ranked** metadata header.
-2. **Ranking table** (Rank, Candidate, Score, Verdict, Total Exp, Missing Mandatory, Partial, Claimed).
-3. **Key Takeaway & Override Decisions** callout section.
-4. **Gap Matrix** with candidate headings and `JD Expectation` column.
-5. **Candidate Details** with full arithmetic breakdowns and status factors.
-6. **Recommendation & Next Steps**.
-
-## Guardrails
-- One unified report covers all candidates in a batch.
-- Strictly no skill inflation: bare keyword mentions default to Claimed (0.3×).
-- All reports saved to `Reports/<YYYY-MM-DD_HH-MM-SS>/` as `.md`, `.html`, and `.pdf`.
-- Never fabricate resume content or evidence.
-- If two files appear to be the same person, screen once and note the duplicate in the report.
-- If a file cannot be read after all fallbacks: state it openly, exclude from scoring, and list it as "unreadable — resend in PDF/DOCX".
-- Deliverable: the PDF file (plus the `.md` / `.html` twins); always give the user the PDF's full path.
