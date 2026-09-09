@@ -1,109 +1,184 @@
----
-title: Candidate Screener MCP Server
-emoji: 🎯
-colorFrom: indigo
-colorTo: cyan
-sdk: docker
-app_port: 7860
-pinned: false
----
+# 🎯 AI Candidate Screener — Model Context Protocol (MCP) Server
 
-# 🤖 Candidate Screener AI Agent & MCP Server
+[![MCP Standard](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-8A2BE2.svg)](https://modelcontextprotocol.io/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![FastMCP](https://img.shields.io/badge/Framework-FastMCP-green.svg)](https://github.com/jlowin/fastmcp)
 
-> **An autonomous, evidence-driven AI screening agent for technical engineering recruitment (SDET, QA, Full-Stack, & AI Engineers).**  
-> Eliminates resume keyword padding through strict deliverable verification, mathematical 100-point capacity scoring, and automated audit-ready PDF/HTML reporting.
+An autonomous, evidence-driven **Model Context Protocol (MCP) Server** for technical recruitment and ATS resume screening (default: Senior SDET / QA Automation, extensible to any Job Description).
+
+Connect this MCP server to **Google Antigravity IDE**, **VS Code (GitHub Copilot / Cline / Cursor / Roo-Code)**, or **Claude Desktop** to empower your AI assistant to parse multi-format resumes, eliminate keyword inflation, and generate audit-ready gap matrices.
 
 ---
 
-## 🚀 Quickstart for Team Members
+## ✨ Features & Capabilities
 
-### Method 1: Using the Standalone Web Portal (Zero-Code UI)
-1. Double-click [`run_screener_portal.bat`](file:///c:/Users/suren/.claude/skills/candidate-screener/run_screener_portal.bat) (or run `python app.py`).
-2. Browser opens at **`http://localhost:8080`**.
-3. **Target Job Description (Optional):**
-   - Upload a custom JD file (`.pdf`, `.docx`, `.txt`, `.md`).
-   - If omitted, the portal automatically uses the default SDET Job Description (`references/job-description.md`).
-4. **Candidate Profiles (Required):**
-   - Drag & drop candidate resumes (`.pdf`, `.docx`, `.txt`).
-   - Click **"🚀 Screen Candidate Profiles"**.
-5. **Instant Results:**
-   - Real-time Leaderboard with Scores and Overrides.
-   - 1-Click download buttons for **PDF**, **HTML**, and **Markdown** reports containing all 7 core sections.
-
-### Method 2: Using in Chat / IDE (Antigravity, Claude Code, Gemini CLI, Cursor)
-Simply open this workspace and ask the AI agent naturally in the chat window:
-- *"Screen the attached candidate resumes."* (uses default SDET JD)
-- *"Screen this candidate against this attached custom JD."* (uses custom JD)
-
-The workspace is pre-configured with [`AGENTS.md`](file:///c:/Users/suren/.claude/skills/candidate-screener/AGENTS.md) and [`.agents/skills/candidate-screener/SKILL.md`](file:///c:/Users/suren/.claude/skills/candidate-screener/.agents/skills/candidate-screener/SKILL.md). The agent automatically:
-1. Ingests and organizes resumes into `Resumes/<YYYY-MM-DD_HH-MM-SS>/`.
-2. Reads multi-format documents (PDF, DOCX, DOC, TXT, OCR).
-3. Evaluates evidence against [`references/job-description.md`](file:///c:/Users/suren/.claude/skills/candidate-screener/references/job-description.md) and [`references/rubric.md`](file:///c:/Users/suren/.claude/skills/candidate-screener/references/rubric.md).
-4. Generates audit-ready Markdown, HTML, and PDF reports directly inside `Reports/<YYYY-MM-DD_HH-MM-SS>/`, including all 7 mandatory sections:
-   - **Screened Files:** Listed input files
-   - **Active JD:** Ground truth JD used
-   - **Candidates Ranked:** Total candidate count
-   - **1) Ranking Table:** Sorted candidates with Score, Verdict, Total Exp, Missing Mandatory, Partial, Claimed
-   - **Key Takeaway & Override Decisions:** Callout box detailing individual overrides and fit
-   - **2) Gap Matrix:** Candidate heading banners with `Skill / Area | JD Expectation | Requirement | Status | Evidence`
-   - **3) Candidate Details:** Deep arithmetic score breakdown and status factor audit
+- **Strict "No-Skill-Inflation" 4-Tier Verification Engine:**
+  - 🟢 **Matched (1.00× weight):** Verified in $\ge 1$ concrete project deliverable.
+  - 🟠 **Partial Match (0.60× weight):** Adjacent tech or minimal exposure.
+  - 🔵 **Claimed not evidenced (0.30× weight):** Keyword list only, no proof.
+  - 🔴 **Missing (0.00× weight):** Not found in resume.
+- **100-Point Capacity Rubric:** Evaluates candidates across Mandatory Skills (85 pts), Good-to-Have Bonus (10 pts), and Experience Fit (5 pts).
+- **Hard-Fail Rule Overrides:** Automatically catches core language gaps and AI/Agentic testing gaps.
+- **Multi-Transport Support:** Runs as a local **`stdio`** server or remote **`sse`** (Server-Sent Events) HTTP service.
+- **Cross-Platform Compatibility:** Works on Windows, macOS, Linux, and Cloud (Render, Docker, Cloudflare, Hugging Face).
 
 ---
 
-## 📁 Repository Architecture
+## 🛠️ MCP Tools, Resources & Prompts
 
-```
-candidate-screener/
-│
-├── AGENTS.md                                             # Workspace Agent Instructions & System Prompt
-├── GEMINI.md                                             # Cross-Platform Instructions
-├── SKILL.md                                              # Agent Skill Definition & Workflow
-│
-├── references/                                           # Ground Truth Reference Data
-│   ├── job-description.md                                # Active Technical Job Description
-│   └── rubric.md                                         # 100-Point Mathematical Rubric & Overrides
-│
-├── Resumes/                                              # Dedicated Candidate Resumes Root
-│   └── <YYYY-MM-DD_HH-MM-SS>/                            # Timestamped upload folder per batch
-│
-├── Reports/                                              # Dedicated Screening Reports Root
-│   └── <YYYY-MM-DD_HH-MM-SS>/                            # Generated Markdown, HTML, and PDF reports
-│
-├── presentation_deck.html                                # Interactive 9-Slide Presentation Deck
-├── presentation_deck.pdf                                 # Exported 16:9 Landscape Slide Deck PDF
-├── CANDIDATE_SCREENER_PROJECT_GUIDE.md                   # Comprehensive Architecture & Playbook Guide
-└── Candidate_Screener_Agent_Architecture_and_Tech_Stack.docx # Formatted Word Document Guide
+### 🧰 Tools
+| Tool Name | Parameters | Description |
+| :--- | :--- | :--- |
+| `screen_candidate` | `candidate_name`, `resume_text`, `custom_jd_text` *(optional)* | Evaluates a single candidate resume against the active JD. Returns 100-pt score breakdown, Gap Matrix, red flags, and final verdict. |
+| `screen_batch_resumes` | `resumes` *(list of {name, text})*, `custom_jd_text` *(optional)* | Batch screens multiple profiles and produces a ranked leaderboard. |
+| `get_job_description` | *None* | Retrieves the active ground-truth Job Description requirements. |
+| `get_scoring_rubric` | *None* | Retrieves the 100-point capacity scoring model and weight matrix. |
+
+### 📚 Resources
+| URI | Description |
+| :--- | :--- |
+| `screener://job-description` | The active ground-truth Job Description requirements. |
+| `screener://rubric` | The active 100-point scoring model and weight allocations. |
+
+### 💬 Prompts
+| Prompt Name | Parameters | Description |
+| :--- | :--- | :--- |
+| `screen_candidate_prompt` | `candidate_name`, `resume_text` | Generates a structured prompt instructing the LLM to screen a candidate using the 4-tier engine. |
+
+---
+
+## 🚀 Quick Setup Guide
+
+### 1. Installation
+
+Clone this repository and install dependencies:
+```bash
+git clone https://github.com/surendra1220/candidate-screener-mcp.git
+cd candidate-screener-mcp
+pip install -r requirements.txt
 ```
 
 ---
 
-## ⚖️ How the Screener Evaluates Resumes
+## 🔌 How to Add to Your AI Tools
 
-### 1. The 4-Tier "No-Skill-Inflation" Engine
-- **Matched (`M`, 1.00× weight):** Demonstrable evidence in $\ge 1$ project deliverable or quantifiable outcome.
-- **Partial Match (`P`, 0.60× weight):** Adjacent technology or passing mention without direct framework ownership.
-- **Claimed (`C`, 0.30× weight):** Listed only in a summary/skills list without project evidence. Automatically flagged for interview probe.
-- **Missing (`(U)`, 0.00× weight):** Not present in the resume.
+### A. Google Antigravity IDE
+Add to your Antigravity configuration file (`~/.gemini/config/mcp_config.json`):
 
-### 2. 100-Point Capacity Model & Hard Gates
-- **Mandatory Skills (85 Pts):** Core languages, frameworks (Playwright, Cypress, Pytest), API testing, BDD, STLC, AI Testing, and Agentic AI.
-- **Good-to-Have Bonus (10 Pts):** Cloud (AWS/Azure), CI/CD pipelines, Healthcare/Pharma domain, and monitoring tools.
-- **Experience Fit (5 Pts):** 6–10 Yrs (5 pts), 11–12 Yrs (3 pts), >12 Yrs (2 pts), < 6 Yrs (0 pts / Gate Fail).
+```json
+{
+  "mcpServers": {
+    "candidate-screener": {
+      "command": "python",
+      "args": [
+        "/path/to/candidate-screener-mcp/mcp_server.py"
+      ]
+    }
+  }
+}
+```
+*(On Windows, use `py` with args `["-3", "C:\\path\\to\\candidate-screener-mcp\\mcp_server.py"]`)*
 
-### 3. Hard-Fail Overrides
-1. **Experience Gate (< 6.0 Yrs):** Immediate Disqualification & Screening Failed prior to scoring.
-2. **Core Language Gate:** Neither JS/TS nor Python evidenced $\rightarrow$ Hard Fail.
-3. **Rule #3 AI Gap:** AI Solution Testing & Agentic AI missing $\rightarrow$ Score capped at $< 60$ and verdict downgraded.
-
----
-
-## 🛠️ How to Customize for Other Roles
-
-To screen candidates for a different engineering role (e.g. Frontend Architect, Backend Python, DevOps):
-1. **Update the Job Description:** Edit [`references/job-description.md`](file:///c:/Users/suren/.claude/skills/candidate-screener/references/job-description.md) with your target skills and must-haves.
-2. **Update the Scoring Rubric:** Adjust weights in [`references/rubric.md`](file:///c:/Users/suren/.claude/skills/candidate-screener/references/rubric.md).
-3. Drop resumes into the chat or `Resumes/` folder and start screening!
+Alternatively, in Antigravity IDE:
+1. Click **Additional Options (`...`)** in the top right.
+2. Select **MCP Servers** $\rightarrow$ **Add Server**.
+3. Paste the configuration above.
 
 ---
 
-*Authored by **Surendra Bharadwaj** · Candidate Screener AI Agent*
+### B. Visual Studio Code (Copilot Agent Mode / Cline / Roo-Code / Cursor)
+Add to your project's `.vscode/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "candidate-screener": {
+      "command": "python",
+      "args": [
+        "${workspaceFolder}/mcp_server.py"
+      ]
+    }
+  }
+}
+```
+
+---
+
+### C. Claude Desktop
+Add to your Claude Desktop configuration file:
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "candidate-screener": {
+      "command": "python",
+      "args": [
+        "C:\\path\\to\\candidate-screener-mcp\\mcp_server.py"
+      ]
+    }
+  }
+}
+```
+
+---
+
+## 🌐 Running as a Public / Remote SSE Server
+
+You can also host the MCP server as a public HTTP SSE endpoint for team use:
+
+### Run Locally / Cloud Server:
+```bash
+python mcp_server.py --transport sse --host 0.0.0.0 --port 8000
+```
+
+### Connect via Remote SSE in any MCP Client:
+```json
+{
+  "mcpServers": {
+    "candidate-screener-remote": {
+      "serverUrl": "https://your-domain.com/sse"
+    }
+  }
+}
+```
+
+---
+
+## 💡 Example Prompts to Ask Your AI Assistant
+
+Once connected, you can interact with the Candidate Screener naturally:
+
+1. **Screen an uploaded candidate:**
+   > *"Using candidate-screener, screen the attached resume against our default SDET job description."*
+
+2. **Screen with a custom role:**
+   > *"Evaluate this candidate against the custom JD provided in this prompt using the 4-tier no-inflation engine."*
+
+3. **Inspect the active rubric:**
+   > *"What are the mandatory skill weights and AI hard-fail override rules in the active rubric?"*
+
+---
+
+## 📦 Project Structure
+
+```
+candidate-screener-mcp/
+├── mcp_server.py             # Main FastMCP Server (Tools, Resources, Prompts)
+├── requirements.txt          # Python dependencies (mcp, pypdf, python-docx, fpdf2)
+├── references/
+│   ├── job-description.md    # Ground-truth SDET Job Description
+│   └── rubric.md             # 100-point capacity scoring model & rules
+├── .vscode/
+│   └── mcp.json              # VS Code MCP configuration
+├── antigravity_mcp_config.json # Antigravity IDE configuration
+├── Dockerfile                # Container deployment configuration
+└── README.md                 # Public documentation
+```
+
+---
+
+## 📄 License
+This project is open source and available under the [MIT License](LICENSE).

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "candidate-screener": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\suren\\.claude\\skills\\candidate-screener\\mcp_server.py"
+      ]
+    }
+  }
+}
