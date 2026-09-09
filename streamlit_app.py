@@ -106,54 +106,56 @@ RESUMES_DIR.mkdir(exist_ok=True)
 REPORTS_DIR.mkdir(exist_ok=True)
 DEFAULT_JD_PATH = REFERENCES_DIR / "job-description.md"
 
-FALLBACK_DEFAULT_JD_TEXT = """# Senior SDET / QA Automation Engineer
-- Role: Senior SDET / QA Automation Engineer
-- Experience: 6 to 10 years of experience in test automation.
-- Mandatory:
-  - JavaScript / TypeScript
-  - Python
-  - Cypress
-  - Playwright
-  - Pytest
-  - Automation Framework Design (Page Object Model)
-  - UI / Web Testing + BDD (Cucumber / SpecFlow)
-  - API Testing (REST APIs, Postman, Rest Assured)
-  - STLC & Test Strategy
-  - Test Management Tools (Jira, ALM, TestRail)
-  - Agile / Kanban
-  - AI Solution Testing (GenAI, ML Model validation)
-  - Agentic AI (MCP, RAG, Multi-agent workflows)
-- Preferred / Good to have:
-  - AWS / Azure Cloud Exposure
-  - CI/CD Integration (Jenkins, GitHub Actions)
-  - Monitoring & Observability (Splunk, Grafana)
-  - No-Code / Low-Code Tools (Mabl, TestComplete)
-  - Pharma / Life Sciences Domain
+FALLBACK_DEFAULT_JD_TEXT = """# SDET — Key Skills & Requirements
+• Role: Software Development Engineer in Test (SDET)
+• Experience: 3 to 12 Years Experience
+
+★ Must Have Skills:
+- Life Sciences / Pharma Domain: Working experience on Life Sciences / Pharma / Clinical / Regulatory / Foundry projects.
+- JavaScript / TypeScript: Proficient in JS/TS for building automation solutions.
+- Python: Proficient in Python for building automation solutions.
+- Playwright: Hands-on experience with framework using Playwright.
+- Cypress / Pytest / Selenium: Experience with Cypress, Pytest, Selenium or equivalent modern tools.
+- Framework Design: Ability to build, scale, and maintain automation frameworks end-to-end.
+- UI / Web Testing + BDD: Well versed with UI/Web testing with BDD frameworks like Cucumber / SpecFlow.
+- API Testing: Knowledge of REST APIs along with Playwright API / RestAssured / Postman / Insomnia / Mocha.
+- STLC & Testing Strategies: All STLC phases and best test practices including functional and non-functional tests.
+- Test Management Tools: Hands on working knowledge of tools like Jira, ALM, TestRail.
+- Project Methodology (Agile/Kanban): Working knowledge of Agile, Kanban, etc.
+- AI Solutions & AI Testing: Creating AI solutions to reduce manual effort & testing AI powered solutions / Playwright agents / MCPs.
+- Agentic AI (MCP, RAG, Prompting): Experience with Agentic based solutions like MCP, RAG, Prompting.
+
+◆ Good to have Skills:
+- AWS / Azure Cloud Exposure: Working knowledge of AWS/Azure services relevant to test environments.
+- CI/CD Integration: Integrates test suites into pipelines (Jenkins, GitHub Actions, GitLab CI).
+- Distributed Debugging & Log Analysis: Exposure to Power BI, Splunk / Grafana or monitoring tools.
+- Root Cause Analysis: Strong diagnostic skills for complex multi-system issues, tracing failures across services and logs.
+- No-Code / Low-Code Tools: Knowledge of tools like MABL, Test Complete.
 """
 
-# Standard Default SDET Taxonomy
+# Updated SDET Taxonomy Weights (Total: 85 Mandatory + 10 Good-to-have + 5 Exp = 100)
 DEFAULT_MANDATORY_WEIGHTS = {
+    "Life Sciences / Pharma Domain": (9, "Working experience in Life Sciences / Pharma / Clinical / Regulatory / Foundry projects"),
     "JavaScript / TypeScript": (6, "Proficient in JS/TS for building automation solutions"),
     "Python": (6, "Proficient in Python for building automation solutions"),
-    "Cypress": (6, "Hands-on modern E2E automation tool"),
-    "Playwright": (6, "Hands-on Playwright modern framework experience"),
-    "Pytest": (6, "Hands-on Pytest test runner & fixtures"),
+    "Playwright": (7, "Hands-on experience with framework using Playwright"),
+    "Cypress / Pytest / Selenium": (6, "Experience with Cypress, Pytest, Selenium or equivalent tools"),
     "Automation Framework Design": (8, "Build, scale, and maintain POM frameworks end-to-end"),
-    "UI / Web Testing + BDD": (9, "UI/Web testing with BDD (Cucumber / SpecFlow / MABL)"),
-    "API Testing": (9, "REST APIs with Postman / Insomnia / Mocha"),
-    "STLC & Test Strategy": (7, "Functional & non-functional testing strategy, RTM, metrics"),
-    "Test Management Tools": (6, "Hands-on Jira, HP ALM / QC, TestRail"),
-    "Agile / Kanban": (6, "Agile Scrum ceremonies, sprint planning, defect triage"),
-    "AI Solution Testing": (6, "Experience testing AI-powered solutions / ML models"),
-    "Agentic AI": (4, "Agentic AI (MCP, RAG, Prompting; test/dev solutions)")
+    "UI / Web Testing + BDD": (8, "UI/Web testing with BDD (Cucumber / SpecFlow / MABL)"),
+    "API Testing": (8, "REST APIs with Playwright API, RestAssured, Postman, Insomnia"),
+    "STLC & Test Strategy": (6, "Functional & non-functional testing strategy, RTM, metrics"),
+    "Test Management Tools": (5, "Hands-on Jira, HP ALM / QC, TestRail"),
+    "Agile / Kanban": (5, "Agile Scrum ceremonies, sprint planning, defect triage"),
+    "AI Solutions & AI Testing": (6, "Creating AI solutions & testing AI-powered solutions / Playwright agents / MCPs"),
+    "Agentic AI (MCP/RAG/Prompting)": (5, "Agentic AI (MCP, RAG, Prompting; test/dev solutions)")
 }
 
 DEFAULT_GOOD_TO_HAVE_WEIGHTS = {
     "AWS / Azure Cloud Exposure": (2, "Cloud services relevant to test environments"),
     "CI/CD Integration": (3, "Integrates test suites into CI/CD pipelines"),
-    "Monitoring & Observability": (2, "Splunk, Grafana, Power BI monitoring"),
-    "No-Code / Low-Code Tools": (1, "MABL, Test Complete"),
-    "Pharma / Life Sciences Domain": (2, "Pharma, healthcare, or clinical trial background")
+    "Distributed Debugging & Log Analysis": (2, "Power BI, Splunk, Grafana monitoring"),
+    "Root Cause Analysis": (2, "Multi-system issue diagnostics & failure tracing"),
+    "No-Code / Low-Code Tools": (1, "MABL, Test Complete")
 }
 
 def extract_text_from_bytes(file_name: str, file_bytes: bytes) -> str:
@@ -202,14 +204,17 @@ def extract_years_experience(text: str) -> float:
     return 0.0
 
 def parse_custom_jd(jd_text: str):
+    if not jd_text or jd_text.strip() == FALLBACK_DEFAULT_JD_TEXT.strip():
+        return "SDET (Software Development Engineer in Test)", DEFAULT_MANDATORY_WEIGHTS, DEFAULT_GOOD_TO_HAVE_WEIGHTS
+
     lines = [line.strip() for line in jd_text.splitlines() if line.strip()]
     role_title = "Custom Technical Role"
     for line in lines[:5]:
         if line.startswith("#"):
-            role_title = line.lstrip("#").strip()
+            role_title = line.lstrip("#").strip().replace("*", "")
             break
         elif "role:" in line.lower() or "title:" in line.lower() or "position:" in line.lower():
-            role_title = line.split(":", 1)[1].strip()
+            role_title = line.split(":", 1)[1].strip().replace("*", "")
             break
 
     mandatory = {}
@@ -228,13 +233,17 @@ def parse_custom_jd(jd_text: str):
         if m:
             item = m.group(1).strip()
             if len(item) > 3 and not item.endswith(":"):
-                title = item.split(":")[0].split("-")[0].strip()
+                raw_title = item.split(":")[0].split("-")[0].strip()
+                title = re.sub(r"[*#_]", "", raw_title).strip()
+                # Skip metadata lines
+                if title.lower() in ["role", "experience", "experience requirement", "key skills & requirements"]:
+                    continue
                 if len(title) > 40:
                     title = title[:37] + "..."
                 if current_sec == "mandatory":
-                    mandatory[title] = (6, item)
+                    mandatory[title] = (6, item.replace("*", ""))
                 else:
-                    good_to_have[title] = (2, item)
+                    good_to_have[title] = (2, item.replace("*", ""))
 
     if not mandatory:
         mandatory = DEFAULT_MANDATORY_WEIGHTS
@@ -244,10 +253,10 @@ def parse_custom_jd(jd_text: str):
     return role_title, mandatory, good_to_have
 
 def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict:
-    if custom_jd_text:
+    if custom_jd_text and custom_jd_text.strip() != FALLBACK_DEFAULT_JD_TEXT.strip() and (not DEFAULT_JD_PATH.exists() or custom_jd_text.strip() != DEFAULT_JD_PATH.read_text(encoding='utf-8', errors='ignore').strip()):
         role_title, mandatory_weights, good_weights = parse_custom_jd(custom_jd_text)
     else:
-        role_title = "Senior SDET / QA Automation"
+        role_title = "SDET (Software Development Engineer in Test)"
         mandatory_weights = DEFAULT_MANDATORY_WEIGHTS
         good_weights = DEFAULT_GOOD_TO_HAVE_WEIGHTS
 
@@ -255,24 +264,24 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
     lower_text = text.lower()
 
     skill_keywords = {
+        "Life Sciences / Pharma Domain": ["life sciences", "pharma", "clinical", "regulatory", "foundry", "gxp", "fda", "21 cfr", "ctms", "healthcare", "iqvia", "philips", "novartis", "pfizer", "oracle clinical", "hospital", "patient", "medical"],
         "JavaScript / TypeScript": ["javascript", "typescript", "js", "ts", "es6", "node"],
         "Python": ["python", "pytest", "django", "flask"],
-        "Cypress": ["cypress"],
         "Playwright": ["playwright"],
-        "Pytest": ["pytest"],
-        "Automation Framework Design": ["framework", "page object model", "pom", "modular framework", "hybrid framework", "architecture"],
-        "UI / Web Testing + BDD": ["cucumber", "bdd", "specflow", "gherkin", "selenium", "ui automation", "web testing"],
-        "API Testing": ["rest", "api", "postman", "rest assured", "restassured", "soap", "endpoint", "microservices"],
-        "STLC & Test Strategy": ["stlc", "test strategy", "test plan", "rtm", "regression", "qa process"],
+        "Cypress / Pytest / Selenium": ["cypress", "pytest", "selenium", "webdriver"],
+        "Automation Framework Design": ["framework", "page object model", "pom", "modular framework", "hybrid framework", "architecture", "scale framework"],
+        "UI / Web Testing + BDD": ["cucumber", "bdd", "specflow", "gherkin", "ui automation", "web testing", "mabl"],
+        "API Testing": ["rest", "api", "postman", "rest assured", "restassured", "soap", "endpoint", "microservices", "insomnia", "mocha", "playwright api"],
+        "STLC & Test Strategy": ["stlc", "test strategy", "test plan", "rtm", "regression", "qa process", "functional", "non-functional"],
         "Test Management Tools": ["jira", "alm", "quality center", "testrail", "zephyr", "qtest", "azure devops"],
         "Agile / Kanban": ["agile", "scrum", "sprint", "kanban", "ceremonies", "standup"],
-        "AI Solution Testing": ["ai testing", "llm", "genai", "generative ai", "model validation", "ml testing", "prompt"],
-        "Agentic AI": ["agentic", "mcp", "rag", "agents", "langchain", "autogen", "crewai"],
+        "AI Solutions & AI Testing": ["ai solutions", "ai testing", "llm", "genai", "generative ai", "model validation", "ml testing", "playwright agents", "ai-assisted"],
+        "Agentic AI (MCP/RAG/Prompting)": ["agentic", "mcp", "rag", "agents", "langchain", "prompting", "prompt", "autogen", "crewai"],
         "AWS / Azure Cloud Exposure": ["aws", "azure", "cloud", "ec2", "s3", "lambda"],
         "CI/CD Integration": ["ci/cd", "jenkins", "github actions", "gitlab", "pipeline", "bamboo"],
-        "Monitoring & Observability": ["splunk", "grafana", "dynatrace", "datadog", "cloudwatch", "power bi"],
-        "No-Code / Low-Code Tools": ["mabl", "testcomplete", "tosca", "accelq", "katalon"],
-        "Pharma / Life Sciences Domain": ["pharma", "clinical", "healthcare", "gxp", "fda", "21 cfr", "life sciences", "iqvia", "philips", "novartis", "pfizer"]
+        "Distributed Debugging & Log Analysis": ["splunk", "grafana", "dynatrace", "datadog", "cloudwatch", "power bi", "log analysis", "logs"],
+        "Root Cause Analysis": ["root cause analysis", "rca", "diagnostic", "debugging", "failure tracing", "defect triage"],
+        "No-Code / Low-Code Tools": ["mabl", "testcomplete", "tosca", "accelq", "katalon"]
     }
 
     mandatory_results = {}
@@ -282,7 +291,7 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
         matched_kw = [kw for kw in kw_list if kw in lower_text]
         
         if matched_kw:
-            is_evidenced = any(term in lower_text for term in ["implemented", "designed", "developed", "automated", "created", "reduced", "led", "migrated", "built", "tested", "project"])
+            is_evidenced = any(term in lower_text for term in ["implemented", "designed", "developed", "automated", "created", "reduced", "led", "migrated", "built", "tested", "project", "experience", "worked", "deliverable"])
             if is_evidenced:
                 status = "Matched"
                 factor = 1.00
@@ -317,17 +326,13 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
         good_score += points
         good_results[skill] = (status, evidence)
 
-    # Experience fit calculation (proportional score without hard fail)
-    if 6.0 <= exp_years <= 10.0:
+    # Experience fit calculation for 3–12 yrs
+    if 3.0 <= exp_years <= 12.0:
         exp_score = 5.0
-    elif 4.0 <= exp_years < 6.0:
-        exp_score = 4.0
-    elif 0.0 < exp_years < 4.0:
-        exp_score = 3.0
-    elif 10.0 < exp_years <= 12.0:
-        exp_score = 3.0
     elif exp_years > 12.0:
-        exp_score = 2.0
+        exp_score = 4.0
+    elif 1.0 <= exp_years < 3.0:
+        exp_score = 3.0
     else:
         exp_score = 4.0
 
@@ -335,9 +340,9 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
     final_score = raw_score
     override_note = "Standard capacity calculation"
 
-    # Core Language Gate
+    # Core Language Gate (JS/TS or Python)
     has_js = "Matched" in mandatory_results.get("JavaScript / TypeScript", ("Missing",))[0] or "Matched" in mandatory_results.get("Python", ("Missing",))[0]
-    if not has_js and "JavaScript / TypeScript" in mandatory_weights:
+    if not has_js and ("JavaScript / TypeScript" in mandatory_weights or "Python" in mandatory_weights):
         final_score = min(final_score, 45.0)
         verdict = "Weak Fit (Core Language Missing) - Rejected"
         override_note = "Rule #2 Override: Neither core JavaScript/TypeScript nor Python was evidenced in project deliverables."
@@ -357,13 +362,13 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
         }
 
     # AI Hard Gap Rule #3
-    ai_status = mandatory_results.get("AI Solution Testing", ("Missing",))[0]
-    agentic_status = mandatory_results.get("Agentic AI", ("Missing",))[0]
+    ai_status = mandatory_results.get("AI Solutions & AI Testing", mandatory_results.get("AI Solution Testing", ("Missing",)))[0]
+    agentic_status = mandatory_results.get("Agentic AI (MCP/RAG/Prompting)", mandatory_results.get("Agentic AI", ("Missing",)))[0]
     if ai_status == "Missing" and agentic_status == "Missing":
         if final_score >= 60.0:
             final_score = 59.0
         verdict = "Weak Fit (AI Testing & Agentic AI Gap) - Hard Fail"
-        override_note = "Rule #3 Override: Both AI Solution Testing and Agentic AI are completely missing; score capped < 60."
+        override_note = "Rule #3 Override: Both AI Testing and Agentic AI are completely missing; score capped < 60."
         return {
             "name": name,
             "target_role": role_title,
@@ -783,7 +788,7 @@ with col1:
     st.markdown("### 📄 1. Target Job Description <span class='mandatory-badge'>Mandatory</span>", unsafe_allow_html=True)
     jd_choice = st.radio(
         "Select Job Description Source:",
-        options=["Use Active Default SDET JD (6–10 Yrs)", "Upload Custom Job Description Document"],
+        options=["Use Active Default SDET JD (3–12 Yrs, Life Sciences/Pharma)", "Upload Custom Job Description Document"],
         index=0,
         help="Both Job Description and Candidate Profiles are mandatory inputs."
     )
@@ -800,11 +805,11 @@ with col1:
         else:
             st.warning("⚠️ Please upload a custom Job Description file to proceed.")
     else:
-        st.success("✅ Active Ground Truth: **Pre-loaded SDET Job Description (6–10 Yrs)**")
+        st.success("✅ Active Ground Truth: **Pre-loaded SDET Job Description (3–12 Yrs, Life Sciences / Pharma)**")
         with st.expander("👁️ View Active Default SDET Requirements", expanded=False):
             st.markdown("""
-            - **Mandatory Skills:** JavaScript/TypeScript, Python, Cypress, Playwright, Pytest, Automation Framework Design, UI/Web Testing + BDD, API Testing, STLC & Strategy, Test Management (Jira/ALM), Agile/Kanban, AI Solution Testing, Agentic AI.
-            - **Good-to-Have Bonus:** AWS/Azure Cloud, CI/CD Integration, Monitoring (Splunk/Grafana), No-Code Tools, Pharma Domain.
+            - **Mandatory Skills:** Life Sciences / Pharma Domain, JavaScript / TypeScript, Python, Playwright, Cypress / Pytest / Selenium, Automation Framework Design, UI / Web Testing + BDD, API Testing, STLC & Strategy, Test Management Tools (Jira / ALM), Agile / Kanban, AI Solutions & AI Testing, Agentic AI (MCP / RAG / Prompting).
+            - **Good-to-Have Bonus:** AWS / Azure Cloud, CI/CD Integration, Distributed Debugging & Log Analysis (Power BI, Splunk, Grafana), Root Cause Analysis, No-Code / Low-Code Tools (MABL, TestComplete).
             """)
 
 with col2:
@@ -823,7 +828,7 @@ with col2:
 st.divider()
 
 # Check ready condition
-is_jd_ready = (jd_choice == "Use Active Default SDET JD (6–10 Yrs)") or (custom_jd_upload is not None)
+is_jd_ready = (jd_choice == "Use Active Default SDET JD (3–12 Yrs, Life Sciences/Pharma)") or (custom_jd_upload is not None)
 is_ready = bool(uploaded_resumes) and is_jd_ready
 
 if st.button("🚀 Screen Candidate Profiles", type="primary", use_container_width=True, disabled=not is_ready):
@@ -834,7 +839,7 @@ if st.button("🚀 Screen Candidate Profiles", type="primary", use_container_wid
             upload_sub.mkdir(parents=True, exist_ok=True)
 
             custom_jd_text = None
-            jd_display_name = "references/job-description.md (Default SDET 6–10 Yrs)"
+            jd_display_name = "references/job-description.md (SDET 3–12 Yrs, Life Sciences/Pharma)"
             if custom_jd_upload:
                 jd_bytes = custom_jd_upload.getvalue()
                 (upload_sub / custom_jd_upload.name).write_bytes(jd_bytes)

@@ -35,29 +35,29 @@ mcp = FastMCP(
     dependencies=["pypdf", "python-docx", "fpdf2"]
 )
 
-# Standard SDET Taxonomy Weights
+# Standard SDET Taxonomy Weights (Total: 85 Mandatory + 10 Good-to-have + 5 Exp = 100)
 DEFAULT_MANDATORY_WEIGHTS = {
+    "Life Sciences / Pharma Domain": (9, "Working experience in Life Sciences / Pharma / Clinical / Regulatory / Foundry projects"),
     "JavaScript / TypeScript": (6, "Proficient in JS/TS for building automation solutions"),
     "Python": (6, "Proficient in Python for building automation solutions"),
-    "Cypress": (6, "Hands-on modern E2E automation tool"),
-    "Playwright": (6, "Hands-on Playwright modern framework experience"),
-    "Pytest": (6, "Hands-on Pytest test runner & fixtures"),
+    "Playwright": (7, "Hands-on experience with framework using Playwright"),
+    "Cypress / Pytest / Selenium": (6, "Experience with Cypress, Pytest, Selenium or equivalent tools"),
     "Automation Framework Design": (8, "Build, scale, and maintain POM frameworks end-to-end"),
-    "UI / Web Testing + BDD": (9, "UI/Web testing with BDD (Cucumber / SpecFlow / MABL)"),
-    "API Testing": (9, "REST APIs with Postman / Insomnia / Mocha"),
-    "STLC & Test Strategy": (7, "Functional & non-functional testing strategy, RTM, metrics"),
-    "Test Management Tools": (6, "Hands-on Jira, HP ALM / QC, TestRail"),
-    "Agile / Kanban": (6, "Agile Scrum ceremonies, sprint planning, defect triage"),
-    "AI Solution Testing": (6, "Experience testing AI-powered solutions / ML models"),
-    "Agentic AI": (4, "Agentic AI (MCP, RAG, Prompting; test/dev solutions)")
+    "UI / Web Testing + BDD": (8, "UI/Web testing with BDD (Cucumber / SpecFlow / MABL)"),
+    "API Testing": (8, "REST APIs with Playwright API, RestAssured, Postman, Insomnia"),
+    "STLC & Test Strategy": (6, "Functional & non-functional testing strategy, RTM, metrics"),
+    "Test Management Tools": (5, "Hands-on Jira, HP ALM / QC, TestRail"),
+    "Agile / Kanban": (5, "Agile Scrum ceremonies, sprint planning, defect triage"),
+    "AI Solutions & AI Testing": (6, "Creating AI solutions & testing AI-powered solutions / Playwright agents / MCPs"),
+    "Agentic AI (MCP/RAG/Prompting)": (5, "Agentic AI (MCP, RAG, Prompting; test/dev solutions)")
 }
 
 DEFAULT_GOOD_TO_HAVE_WEIGHTS = {
     "AWS / Azure Cloud Exposure": (2, "Cloud services relevant to test environments"),
     "CI/CD Integration": (3, "Integrates test suites into CI/CD pipelines"),
-    "Monitoring & Observability": (2, "Splunk, Grafana, Power BI monitoring"),
-    "No-Code / Low-Code Tools": (1, "MABL, Test Complete"),
-    "Pharma / Life Sciences Domain": (2, "Pharma, healthcare, or clinical trial background")
+    "Distributed Debugging & Log Analysis": (2, "Power BI, Splunk, Grafana monitoring"),
+    "Root Cause Analysis": (2, "Multi-system issue diagnostics & failure tracing"),
+    "No-Code / Low-Code Tools": (1, "MABL, Test Complete")
 }
 
 def extract_years_experience(text: str) -> float:
@@ -76,14 +76,17 @@ def extract_years_experience(text: str) -> float:
     return 0.0
 
 def parse_custom_jd(jd_text: str):
+    if not jd_text:
+        return "SDET (Software Development Engineer in Test)", DEFAULT_MANDATORY_WEIGHTS, DEFAULT_GOOD_TO_HAVE_WEIGHTS
+
     lines = [line.strip() for line in jd_text.splitlines() if line.strip()]
     role_title = "Custom Technical Role"
     for line in lines[:5]:
         if line.startswith("#"):
-            role_title = line.lstrip("#").strip()
+            role_title = line.lstrip("#").strip().replace("*", "")
             break
         elif "role:" in line.lower() or "title:" in line.lower() or "position:" in line.lower():
-            role_title = line.split(":", 1)[1].strip()
+            role_title = line.split(":", 1)[1].strip().replace("*", "")
             break
 
     mandatory = {}
@@ -102,13 +105,16 @@ def parse_custom_jd(jd_text: str):
         if m:
             item = m.group(1).strip()
             if len(item) > 3 and not item.endswith(":"):
-                title = item.split(":")[0].split("-")[0].strip()
+                raw_title = item.split(":")[0].split("-")[0].strip()
+                title = re.sub(r"[*#_]", "", raw_title).strip()
+                if title.lower() in ["role", "experience", "experience requirement", "key skills & requirements"]:
+                    continue
                 if len(title) > 40:
                     title = title[:37] + "..."
                 if current_sec == "mandatory":
-                    mandatory[title] = (6, item)
+                    mandatory[title] = (6, item.replace("*", ""))
                 else:
-                    good_to_have[title] = (2, item)
+                    good_to_have[title] = (2, item.replace("*", ""))
 
     if not mandatory:
         mandatory = DEFAULT_MANDATORY_WEIGHTS
@@ -118,10 +124,10 @@ def parse_custom_jd(jd_text: str):
     return role_title, mandatory, good_to_have
 
 def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
-    if custom_jd_text:
+    if custom_jd_text and (not DEFAULT_JD_PATH.exists() or custom_jd_text.strip() != DEFAULT_JD_PATH.read_text(encoding='utf-8', errors='ignore').strip()):
         role_title, mandatory_weights, good_weights = parse_custom_jd(custom_jd_text)
     else:
-        role_title = "Senior SDET / QA Automation"
+        role_title = "SDET (Software Development Engineer in Test)"
         mandatory_weights = DEFAULT_MANDATORY_WEIGHTS
         good_weights = DEFAULT_GOOD_TO_HAVE_WEIGHTS
 
@@ -129,24 +135,24 @@ def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
     lower_text = text.lower()
 
     skill_keywords = {
+        "Life Sciences / Pharma Domain": ["life sciences", "pharma", "clinical", "regulatory", "foundry", "gxp", "fda", "21 cfr", "ctms", "healthcare", "iqvia", "philips", "novartis", "pfizer", "oracle clinical", "hospital", "patient", "medical"],
         "JavaScript / TypeScript": ["javascript", "typescript", "js", "ts", "es6", "node"],
         "Python": ["python", "pytest", "django", "flask"],
-        "Cypress": ["cypress"],
         "Playwright": ["playwright"],
-        "Pytest": ["pytest"],
-        "Automation Framework Design": ["framework", "page object model", "pom", "modular framework", "hybrid framework", "architecture"],
-        "UI / Web Testing + BDD": ["cucumber", "bdd", "specflow", "gherkin", "selenium", "ui automation", "web testing"],
-        "API Testing": ["rest", "api", "postman", "rest assured", "restassured", "soap", "endpoint", "microservices"],
-        "STLC & Test Strategy": ["stlc", "test strategy", "test plan", "rtm", "regression", "qa process"],
+        "Cypress / Pytest / Selenium": ["cypress", "pytest", "selenium", "webdriver"],
+        "Automation Framework Design": ["framework", "page object model", "pom", "modular framework", "hybrid framework", "architecture", "scale framework"],
+        "UI / Web Testing + BDD": ["cucumber", "bdd", "specflow", "gherkin", "ui automation", "web testing", "mabl"],
+        "API Testing": ["rest", "api", "postman", "rest assured", "restassured", "soap", "endpoint", "microservices", "insomnia", "mocha", "playwright api"],
+        "STLC & Test Strategy": ["stlc", "test strategy", "test plan", "rtm", "regression", "qa process", "functional", "non-functional"],
         "Test Management Tools": ["jira", "alm", "quality center", "testrail", "zephyr", "qtest", "azure devops"],
         "Agile / Kanban": ["agile", "scrum", "sprint", "kanban", "ceremonies", "standup"],
-        "AI Solution Testing": ["ai testing", "llm", "genai", "generative ai", "model validation", "ml testing", "prompt"],
-        "Agentic AI": ["agentic", "mcp", "rag", "agents", "langchain", "autogen", "crewai"],
+        "AI Solutions & AI Testing": ["ai solutions", "ai testing", "llm", "genai", "generative ai", "model validation", "ml testing", "playwright agents", "ai-assisted"],
+        "Agentic AI (MCP/RAG/Prompting)": ["agentic", "mcp", "rag", "agents", "langchain", "prompting", "prompt", "autogen", "crewai"],
         "AWS / Azure Cloud Exposure": ["aws", "azure", "cloud", "ec2", "s3", "lambda"],
         "CI/CD Integration": ["ci/cd", "jenkins", "github actions", "gitlab", "pipeline", "bamboo"],
-        "Monitoring & Observability": ["splunk", "grafana", "dynatrace", "datadog", "cloudwatch", "power bi"],
-        "No-Code / Low-Code Tools": ["mabl", "testcomplete", "tosca", "accelq", "katalon"],
-        "Pharma / Life Sciences Domain": ["pharma", "clinical", "healthcare", "gxp", "fda", "21 cfr", "life sciences", "iqvia", "philips", "novartis", "pfizer"]
+        "Distributed Debugging & Log Analysis": ["splunk", "grafana", "dynatrace", "datadog", "cloudwatch", "power bi", "log analysis", "logs"],
+        "Root Cause Analysis": ["root cause analysis", "rca", "diagnostic", "debugging", "failure tracing", "defect triage"],
+        "No-Code / Low-Code Tools": ["mabl", "testcomplete", "tosca", "accelq", "katalon"]
     }
 
     mandatory_results = {}
@@ -156,7 +162,7 @@ def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
         matched_kw = [kw for kw in kw_list if kw in lower_text]
         
         if matched_kw:
-            is_evidenced = any(term in lower_text for term in ["implemented", "designed", "developed", "automated", "created", "reduced", "led", "migrated", "built", "tested", "project"])
+            is_evidenced = any(term in lower_text for term in ["implemented", "designed", "developed", "automated", "created", "reduced", "led", "migrated", "built", "tested", "project", "experience", "worked", "deliverable"])
             if is_evidenced:
                 status = "Matched"
                 factor = 1.00
@@ -192,16 +198,12 @@ def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
         good_results[skill] = (status, evidence)
 
     # Experience fit calculation
-    if 6.0 <= exp_years <= 10.0:
+    if 3.0 <= exp_years <= 12.0:
         exp_score = 5.0
-    elif 4.0 <= exp_years < 6.0:
-        exp_score = 4.0
-    elif 0.0 < exp_years < 4.0:
-        exp_score = 3.0
-    elif 10.0 < exp_years <= 12.0:
-        exp_score = 3.0
     elif exp_years > 12.0:
-        exp_score = 2.0
+        exp_score = 4.0
+    elif 1.0 <= exp_years < 3.0:
+        exp_score = 3.0
     else:
         exp_score = 4.0
 
@@ -211,7 +213,7 @@ def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
 
     # Core Language Gate
     has_js = "Matched" in mandatory_results.get("JavaScript / TypeScript", ("Missing",))[0] or "Matched" in mandatory_results.get("Python", ("Missing",))[0]
-    if not has_js and "JavaScript / TypeScript" in mandatory_weights:
+    if not has_js and ("JavaScript / TypeScript" in mandatory_weights or "Python" in mandatory_weights):
         final_score = min(final_score, 45.0)
         verdict = "Weak Fit (Core Language Missing) - Rejected"
         override_note = "Rule #2 Override: Neither core JavaScript/TypeScript nor Python was evidenced in project deliverables."
@@ -231,13 +233,13 @@ def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
         }
 
     # AI Hard Gap Rule #3
-    ai_status = mandatory_results.get("AI Solution Testing", ("Missing",))[0]
-    agentic_status = mandatory_results.get("Agentic AI", ("Missing",))[0]
+    ai_status = mandatory_results.get("AI Solutions & AI Testing", mandatory_results.get("AI Solution Testing", ("Missing",)))[0]
+    agentic_status = mandatory_results.get("Agentic AI (MCP/RAG/Prompting)", mandatory_results.get("Agentic AI", ("Missing",)))[0]
     if ai_status == "Missing" and agentic_status == "Missing":
         if final_score >= 60.0:
             final_score = 59.0
         verdict = "Weak Fit (AI Testing & Agentic AI Gap) - Hard Fail"
-        override_note = "Rule #3 Override: Both AI Solution Testing and Agentic AI are completely missing; score capped < 60."
+        override_note = "Rule #3 Override: Both AI Testing and Agentic AI are completely missing; score capped < 60."
         return {
             "name": name,
             "target_role": role_title,
@@ -356,7 +358,7 @@ Candidate Resume:
 {resume_text}
 
 Rules:
-1. Compare candidate profile evidence directly against the Job Description (no arbitrary experience cutoff).
+1. Compare candidate profile evidence directly against the Job Description (3-12 yrs, Life Sciences must-have, JS/Python, Playwright/Cypress, AI/MCP/RAG).
 2. 4-Tier Verification: Matched (1.0x, concrete deliverable), Partial (0.6x), Claimed (0.3x, bare keyword list), Missing (0.0x).
 3. Status Color Standard: Missing (Bold Red), Claimed not evidenced (Bold Blue), Partial Match (Bold Orange), Matched (Bold Green).
 4. Hard Gap Rule: If both AI Solution Testing & Agentic AI are missing, cap score < 60.

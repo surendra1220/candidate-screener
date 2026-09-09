@@ -1,49 +1,43 @@
-# SDET — Software Development Engineer in Test
+# SDET — Key Skills & Requirements
 
-**Role:** Software Development Engineer in Test (SDET)
-**Experience requirement:** 6–10 years, preferably in an SDET or QA Engineering role.
-
----
-
-## ★ Must-Have Skills
-
-### 1. Languages & Frameworks
-- **Core languages:** Proficient in JavaScript/TypeScript **or** Python for building automation solutions.
-- **Test frameworks:** Hands-on experience with Cypress, Playwright, Pytest (or equivalent modern tools).
-- **Framework design:** Ability to **build, scale, and maintain automation frameworks end-to-end**.
-
-### 2. Testing Expertise
-- **UI testing:** Well-versed in UI/Web testing with **BDD frameworks** like Cucumber/SpecFlow and tools like MABL.
-- **API testing:** Knowledge of **REST APIs** with tools such as Postman/Insomnia/Mocha.
-
-### 3. Test Management & Strategy
-- **Testing strategies:** Well-versed across all STLC phases and best practices, functional **and non-functional** tests.
-- **Test management tools:** Hands-on working knowledge of Jira, ALM, TestRail.
-- **Project methodology:** Working knowledge of Agile, Kanban, etc.
-
-### 4. AI-Driven Testing
-- **AI testing:** Experience testing AI-powered solutions.
-- **Agentic AI:** Experience with Agentic-based solutions like **MCP, RAG, Prompting** — including testing and developing similar solutions. Also facilitation with **AI-assisted Tools** (AI solutions).
+• **Role:** Software Development Engineer in Test (SDET)  
+• **Experience:** 3–12 Years Experience
 
 ---
 
-## ◆ Good-to-Have Skills
+## ★ Must Have Skills:
+
+### 1. Domain Experience
+• **Life Sciences / Pharma Domain:** Should have working experience on Life Sciences (any sub domain under Life sciences) / Pharma / Clinical / Regulatory / Foundry in the respective working projects. Good to have experience in Healthcare domain.
+
+### 2. Languages & Frameworks
+• **Core Languages (JS/TS or Python):** Should be proficient in either JavaScript/TypeScript or Python for building automation solutions. Proficient on any one language can be considered as Matched.  
+• **Test Frameworks (Playwright / Cypress / Pytest / Selenium):** Should have hands-on experience with frameworks like Cypress, Playwright, Pytest, or equivalent modern tools. Should have experience with framework using Playwright. Experience with any one of the frameworks using Selenium or Pytest or Cypress or equivalent can be considered as Matched.  
+• **Framework Design:** Ability to build, scale, and maintain automation frameworks end-to-end.
+
+### 3. Testing Expertise
+• **UI Testing:** Well versed with UI/Web testing with BDD frameworks like Cucumber / SpecFlow / any other related frameworks.  
+• **API Testing:** Knowledge of Rest APIs along with tools such as Playwright API / RestAssured / Postman / Insomnia / Mocha.
+
+### 4. Test Management & Strategy
+• **Testing Strategies:** Should be well versed with all STLC phases and best test practices including functional and non-functional tests.  
+• **Test Management Tools:** Hands on working knowledge of tools like Jira, ALM, TestRail.  
+• **Project Methodology:** Working knowledge of project methodologies such as Agile, Kanban, etc.
+
+### 5. AI-Driven Testing & AI-Assisted Tools
+• **AI Solutions:** Experience in creating AI solutions that helps to reduce manual effort.  
+• **AI Testing:** Experience with testing AI powered solutions like Playwright agents or usage of existing MCPs that helps to automate the AI solutions.  
+• **Agentic AI:** Experience with Agentic based solutions like MCP, RAG, Prompting including testing & developing similar solutions. Knowledge or minimum experience on this can be considered as Matched.
+
+---
+
+## ◆ Good to have Skills:
 
 ### 1. Cloud, Infrastructure & CI/CD
-- **Cloud exposure:** Working knowledge of AWS/Azure services relevant to test environments.
-- **CI/CD integration:** Integrates test suites into pipelines (Jenkins, GitHub Actions, GitLab CI, etc.).
+• **Cloud Exposure:** Working knowledge of AWS/Azure services relevant to test environments.  
+• **CI/CD Integration:** Integrates test suites into pipelines (Jenkins, GitHub Actions, GitLab CI, etc.).
 
-### 2. Domain Knowledge / Debugging & Distributed Systems
-- **No-code tools:** Knowledge of no-code/low-code tools like MABL, Test Complete.
-- **Distributed debugging:** Exposure to Power BI, Splunk/Grafana, or other monitoring/reporting tools.
-- **Root cause analysis:** Strong diagnostic skills for complex multi-system issues — tracing failures across services, logs, and data layers.
-- **Industry experience:** Pharma background preferred.
-
----
-
-## Hard requirements (from JD)
-- Experience requirement: **6–10 years**, preferably SDET/QA Engineering.
-- **Experience GATE:** total experience **< 6 years → automatic Screening Failed** (hard rule, applied before scoring).
-- At least one of JavaScript/TypeScript **or** Python as a core automation language.
-- Displays the ability to design/test automation framework end-to-end (build, scale, maintain).
-- UI + API automated testing capability.
+### 2. Domain Knowledge, Debugging & Distributed Systems
+• **Distributed Debugging & Log Analysis:** Exposure to Power BI, Splunk / Grafana or other monitoring / reporting tools.  
+• **Root Cause Analysis:** Strong diagnostic skills for complex, multi-system issues, tracing failures across services, logs, and data layers.  
+• **No-Code / Low-Code Tools:** Knowledge of no code low code tools like MABL, Test Complete.

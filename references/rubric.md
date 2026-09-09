@@ -1,4 +1,4 @@
-# Scoring Rubric — Candidate Screener
+# Scoring Rubric — Candidate Screener (SDET 3–12 Yrs)
 
 ## Capacity
 **Total = MandatorySkills (max 85) + GoodToHaveBonus (max 10) + ExperienceFit (max 5) = 100**
@@ -16,49 +16,46 @@ Per-skill status points (applied same way to mandatory and good-to-have skills):
 
 ## Mandatory skills & weights (sums to 85)
 
-| # | Mandatory skill | Weight |
-|---|---|---|
-| 1 | JavaScript / TypeScript (core automation language) | 6 |
-| 2 | Python (core automation language) | 6 |
-| 3 | Cypress | 6 |
-| 4 | Playwright | 6 |
-| 5 | Pytest | 6 |
-| 6 | Automation framework design — build, scale, and maintain end-to-end | 8 |
-| 7 | UI / Web testing + BDD (Cucumber / SpecFlow, MABL) | 9 |
-| 8 | API testing (REST APIs; Postman / Insomnia / Mocha) | 9 |
-| 9 | STLC + test strategy — functional & non-functional testing | 7 |
-| 10 | Test management tools (Jira, TestRail, ALM) | 6 |
-| 11 | Agile / Kanban methodology | 6 |
-| 12 | AI-powered solution testing (testing AI solutions) | 6 |
-| 13 | Agentic AI (MCP, RAG, Prompting; building & testing solutions) | 4 |
-
-**Note on languages/frameworks:** Candidates are evaluated directly on evidenced skills matching the JD. A candidate is strong if ≥1 core language is evidenced and at least one primary framework is evidenced.
+| # | Mandatory skill | Weight | JD Expectation |
+|---|---|---|---|
+| 1 | **Life Sciences / Pharma Domain Experience** | 9 | Working experience in Life Sciences, Pharma, Clinical, Regulatory, or Foundry in projects (Healthcare domain bonus). |
+| 2 | **JavaScript / TypeScript (Core Language)** | 6 | Proficient in JS/TS for building automation solutions (proficient in either JS/TS or Python counts as Matched). |
+| 3 | **Python (Core Language)** | 6 | Proficient in Python for building automation solutions (proficient in either JS/TS or Python counts as Matched). |
+| 4 | **Playwright / Modern Framework** | 7 | Hands-on experience with Playwright modern test automation framework. |
+| 5 | **Cypress / Pytest / Selenium Frameworks** | 6 | Experience with Cypress, Pytest, Selenium or equivalent modern automation tools. |
+| 6 | **Automation Framework Design** | 8 | Ability to build, scale, and maintain automation frameworks end-to-end (Page Object Model / Modular). |
+| 7 | **UI / Web Testing + BDD** | 8 | UI/Web testing with BDD frameworks like Cucumber, SpecFlow, or equivalent. |
+| 8 | **API Testing** | 8 | REST APIs along with Playwright API, RestAssured, Postman, Insomnia, or Mocha. |
+| 9 | **STLC & Testing Strategies** | 6 | Well-versed with all STLC phases, test strategy/planning, functional and non-functional tests. |
+| 10 | **Test Management Tools** | 5 | Hands-on working knowledge of Jira, HP ALM / QC, TestRail. |
+| 11 | **Project Methodology (Agile / Kanban)** | 5 | Working knowledge of Agile Scrum ceremonies, sprint planning, Kanban defect triage. |
+| 12 | **AI Solutions & AI Testing** | 6 | Creating AI solutions to reduce manual effort & testing AI-powered solutions (Playwright agents / MCPs). |
+| 13 | **Agentic AI (MCP, RAG, Prompting)** | 5 | Experience or knowledge with Agentic solutions (MCP, RAG, Prompting), testing & developing solutions. |
 
 ---
 
 ## Good-to-have bonus (max 10)
 
-| Skill | Weight |
-|---|---|
-| AWS / Azure cloud exposure | 2 |
-| CI/CD integration (Jenkins, GitHub Actions, GitLab CI) | 3 |
-| Monitoring / log analysis — Splunk, Grafana, Power BI | 2 |
-| No-code / low-code tools (MABL, Test Complete) | 1 |
-| Pharma / domain industry experience | 2 |
+| Skill | Weight | JD Expectation |
+|---|---|---|
+| **AWS / Azure Cloud Exposure** | 2 | Cloud services relevant to test environments. |
+| **CI/CD Integration** | 3 | Integrates test suites into CI/CD pipelines (Jenkins, GitHub Actions, GitLab CI). |
+| **Distributed Debugging & Log Analysis** | 2 | Power BI, Splunk, Grafana or monitoring/reporting tools. |
+| **Root Cause Analysis** | 2 | Multi-system diagnostics, tracing failures across services, logs, and data layers. |
+| **No-Code / Low-Code Tools** | 1 | Knowledge of MABL, Test Complete, etc. |
 
 ---
 
 ## Experience fit (max 5)
 
-*Evaluated based on overall seniority alignment without hard-failing or disqualifying candidates with fewer years.*
+*Evaluated based on 3–12 years target experience range without automatic rejection or cutoffs for less years.*
 
-| Total Years of Experience | Points | Seniority Evaluation |
+| Total Years of Experience | Points | Evaluation |
 |---|---|---|
-| < 4 years | 3 | Developing / Early-career (evaluated purely on skill deliverables) |
-| 4–6 years | 4 | Mid-Senior track |
-| 6–10 years | 5 | Target sweet spot |
-| 11–12 years | 3 | Upper seniority |
-| > 12 years | 2 | Extensive leadership / architect track |
+| 3.0 – 12.0 years | 5.0 | Target core experience range |
+| > 12.0 years | 4.0 | Senior / Lead track |
+| 1.0 – 2.9 years | 3.0 | Early career (evaluated purely on skill deliverables) |
+| < 1.0 year | 2.0 | Entry level |
 
 ---
 
@@ -66,15 +63,13 @@ Per-skill status points (applied same way to mandatory and good-to-have skills):
 | Score | Verdict | Screening Result |
 |---|---|---|
 | ≥ 80 | **Strong fit** | **Screening Passed** |
-| 60–79 | **Potential fit** | **Screening Passed** (probes recommended) |
+| 60–79 | **Potential fit** | **Screening Passed** (interview probes recommended) |
 | 40–59 | **Weak fit** | **Screening Failed** |
 | < 40 | **Reject** | **Screening Failed** |
 
 ---
 
-## Content Overrides & Flags (Content-Driven)
-1. **No evidenced core language:** Neither JavaScript/TypeScript nor Python is evidenced in project deliverables $\rightarrow$ **Weak Fit / Reject**.
-2. **No test-automation framework evidence:** None of the required automation frameworks appear in deliverables $\rightarrow$ **Reject**.
-3. **AI-driven testing entirely missing (Rule #3):** Both AI Solution Testing (#12) and Agentic AI (#13) are Missing or Claimed $\rightarrow$ Cap score at $< 60$ and downgrade verdict tier.
-4. **Critical mandatory single-component Missing:** UI + API automation both missing $\rightarrow$ Cap score at 50.
-5. **Skills padding:** If a candidate lists $\ge 2$ mandatory skills only in summary/keywords without deliverable evidence, flag them under Claimed (0.30×) and recommend targeted interview probing.
+## Content Overrides & Flags
+1. **Core Language Gate:** If neither JavaScript/TypeScript nor Python is evidenced in project deliverables $\rightarrow$ **Weak Fit / Reject**.
+2. **AI Hard Gap (Rule #3):** If both AI Solutions/Testing (#12) and Agentic AI (#13) are Missing $\rightarrow$ Cap score at $< 60$ and downgrade verdict tier.
+3. **Domain Alignment Probe:** If Life Sciences / Pharma Domain is Missing, note as major candidate gap for role domain alignment.
