@@ -3,8 +3,14 @@ import pathlib
 import datetime
 import re
 import os
+import io
 import subprocess
 import pypdf
+
+try:
+    import pymupdf as fitz
+except ImportError:
+    fitz = None
 
 try:
     import docx
@@ -82,6 +88,31 @@ RESUMES_DIR.mkdir(exist_ok=True)
 REPORTS_DIR.mkdir(exist_ok=True)
 DEFAULT_JD_PATH = REFERENCES_DIR / "job-description.md"
 
+FALLBACK_DEFAULT_JD_TEXT = """# Senior SDET / QA Automation Engineer
+- Role: Senior SDET / QA Automation Engineer
+- Experience: 6 to 10 years of experience in test automation.
+- Mandatory:
+  - JavaScript / TypeScript
+  - Python
+  - Cypress
+  - Playwright
+  - Pytest
+  - Automation Framework Design (Page Object Model)
+  - UI / Web Testing + BDD (Cucumber / SpecFlow)
+  - API Testing (REST APIs, Postman, Rest Assured)
+  - STLC & Test Strategy
+  - Test Management Tools (Jira, ALM, TestRail)
+  - Agile / Kanban
+  - AI Solution Testing (GenAI, ML Model validation)
+  - Agentic AI (MCP, RAG, Multi-agent workflows)
+- Preferred / Good to have:
+  - AWS / Azure Cloud Exposure
+  - CI/CD Integration (Jenkins, GitHub Actions)
+  - Monitoring & Observability (Splunk, Grafana)
+  - No-Code / Low-Code Tools (Mabl, TestComplete)
+  - Pharma / Life Sciences Domain
+"""
+
 # Standard Default SDET Taxonomy
 DEFAULT_MANDATORY_WEIGHTS = {
     "JavaScript / TypeScript": (6, "Proficient in JS/TS for building automation solutions"),
@@ -109,27 +140,33 @@ DEFAULT_GOOD_TO_HAVE_WEIGHTS = {
 
 def extract_text_from_bytes(file_name: str, file_bytes: bytes) -> str:
     suffix = pathlib.Path(file_name).suffix.lower()
+    text = ""
     if suffix == ".pdf":
         try:
-            import io
             reader = pypdf.PdfReader(io.BytesIO(file_bytes))
-            return "\n".join(page.extract_text() or "" for page in reader.pages)
-        except Exception as e:
-            return f"Error reading PDF: {e}"
+            text = "\n".join(page.extract_text() or "" for page in reader.pages)
+        except Exception:
+            text = ""
+        if not text.strip() and fitz:
+            try:
+                doc = fitz.open(stream=file_bytes, filetype="pdf")
+                text = "\n".join(page.get_text() or "" for page in doc)
+            except Exception:
+                pass
+        return text if text.strip() else "PDF contains non-extractable text."
     elif suffix in [".docx"]:
         if docx:
             try:
-                import io
                 doc = docx.Document(io.BytesIO(file_bytes))
                 return "\n".join(p.text for p in doc.paragraphs)
             except Exception as e:
                 return f"Error reading DOCX: {e}"
-        return "python-docx not installed"
+        return "python-docx parser unavailable"
     else:
         try:
             return file_bytes.decode("utf-8", errors="ignore")
         except Exception as e:
-            return f"Error reading text: {e}"
+            return f"Error reading text file: {e}"
 
 def extract_years_experience(text: str) -> float:
     patterns = [
@@ -190,18 +227,20 @@ def parse_custom_jd(jd_text: str):
 
 def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict:
     if custom_jd_text:
-        _, mandatory_weights, good_weights = parse_custom_jd(custom_jd_text)
+        role_title, mandatory_weights, good_weights = parse_custom_jd(custom_jd_text)
     else:
+        role_title = "Senior SDET / QA Automation"
         mandatory_weights = DEFAULT_MANDATORY_WEIGHTS
         good_weights = DEFAULT_GOOD_TO_HAVE_WEIGHTS
 
     exp_years = extract_years_experience(text)
     lower_text = text.lower()
 
-    # Rule 1: Experience Gate
+    # Rule 1: Experience Gate (<6 yrs)
     if 0 < exp_years < 6.0:
         return {
             "name": name,
+            "target_role": role_title,
             "years_exp": exp_years,
             "mandatory": {k: ("Missing", "Gate Failed: Total experience under 6.0 years cutoff.") for k in mandatory_weights},
             "good_to_have": {k: ("Missing", "Gate Failed: Evaluated 0 due to experience cutoff.") for k in good_weights},
@@ -298,6 +337,7 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
         override_note = "Rule #2 Override: Neither core JavaScript/TypeScript nor Python was evidenced in project deliverables."
         return {
             "name": name,
+            "target_role": role_title,
             "years_exp": exp_years,
             "mandatory": mandatory_results,
             "good_to_have": good_results,
@@ -320,6 +360,7 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
         override_note = "Rule #3 Override: Both AI Solution Testing and Agentic AI are completely missing; score capped < 60."
         return {
             "name": name,
+            "target_role": role_title,
             "years_exp": exp_years,
             "mandatory": mandatory_results,
             "good_to_have": good_results,
@@ -347,6 +388,7 @@ def evaluate_candidate(name: str, text: str, custom_jd_text: str = None) -> dict
 
     return {
         "name": name,
+        "target_role": role_title,
         "years_exp": exp_years,
         "mandatory": mandatory_results,
         "good_to_have": good_results,
@@ -398,145 +440,146 @@ def sanitize(text: str) -> str:
 def build_pdf_report(date_str: str, candidate_results: list, file_names: list, active_jd_display: str) -> bytes:
     if not FPDF:
         return b""
-    pdf = ScreenerPDF(orientation="P", unit="mm", format="A4")
-    pdf.alias_nb_pages()
-    pdf.add_page()
+    try:
+        pdf = ScreenerPDF(orientation="P", unit="mm", format="A4")
+        pdf.alias_nb_pages()
+        pdf.add_page()
 
-    # Title & Metadata
-    pdf.set_font("Helvetica", "B", 16)
-    pdf.set_text_color(15, 23, 42)
-    pdf.cell(0, 8, f"Candidate Screening Audit Report - {sanitize(date_str)}")
-    pdf.ln(8)
+        # Title & Metadata
+        pdf.set_font("Helvetica", "B", 16)
+        pdf.set_text_color(15, 23, 42)
+        pdf.cell(0, 8, f"Candidate Screening Audit Report - {sanitize(date_str)}")
+        pdf.ln(8)
 
-    pdf.set_fill_color(241, 245, 249)
-    pdf.set_draw_color(203, 213, 225)
-    pdf.rect(10, pdf.get_y(), 190, 20, "DF")
-    pdf.set_xy(12, pdf.get_y() + 2)
-    pdf.set_font("Helvetica", "B", 8.5)
-    pdf.set_text_color(71, 85, 105)
-    pdf.cell(0, 5, f"Screened Files: {sanitize(', '.join(file_names))}")
-    pdf.ln(5)
-    pdf.set_x(12)
-    pdf.cell(0, 5, f"Active JD: {sanitize(active_jd_display)}")
-    pdf.ln(5)
-    pdf.set_x(12)
-    pdf.cell(0, 5, f"Candidates Ranked: {len(candidate_results)}")
-    pdf.ln(10)
-
-    # 1) Ranking Leaderboard
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.set_text_color(30, 58, 138)
-    pdf.cell(0, 7, "1) Candidate Ranking Leaderboard")
-    pdf.ln(6)
-
-    # Table Header
-    col_w = [10, 42, 26, 38, 22, 52]
-    headers = ["#", "Candidate", "Score", "Verdict", "Exp", "Missing Mandatory"]
-    pdf.set_fill_color(30, 41, 59)
-    pdf.set_text_color(255, 255, 255)
-    pdf.set_font("Helvetica", "B", 8)
-    for w, h in zip(col_w, headers):
-        pdf.cell(w, 6, h, border=1, fill=True)
-    pdf.ln(6)
-
-    pdf.set_text_color(30, 41, 59)
-    pdf.set_font("Helvetica", size=7.5)
-    for idx, c in enumerate(candidate_results, 1):
-        missing_m = [k for k, v in c.get("mandatory", {}).items() if v[0] == "Missing"]
-        missing_str = ", ".join(missing_m[:2]) + ("..." if len(missing_m) > 2 else "") if missing_m else "None"
-        
-        pdf.cell(col_w[0], 6, str(idx), border=1)
-        pdf.cell(col_w[1], 6, sanitize(c["name"][:22]), border=1)
-        pdf.set_font("Helvetica", "B", 7.5)
-        pdf.cell(col_w[2], 6, f"{c['final_score']}/100", border=1)
-        pdf.set_font("Helvetica", size=7.5)
-        pdf.cell(col_w[3], 6, sanitize(c["verdict"][:20]), border=1)
-        pdf.cell(col_w[4], 6, f"{c['years_exp']} yrs", border=1)
-        pdf.cell(col_w[5], 6, sanitize(missing_str[:28]), border=1)
-        pdf.ln(6)
-
-    pdf.ln(4)
-
-    # Key Takeaways
-    pdf.set_fill_color(254, 243, 199)
-    pdf.set_draw_color(245, 158, 11)
-    takeaway_h = 8 + (len(candidate_results) * 5.5)
-    pdf.rect(10, pdf.get_y(), 190, takeaway_h, "DF")
-    pdf.set_xy(12, pdf.get_y() + 2)
-    pdf.set_font("Helvetica", "B", 9)
-    pdf.set_text_color(146, 64, 14)
-    pdf.cell(0, 5, "Key Takeaway & Override Decisions:")
-    pdf.ln(5)
-    pdf.set_font("Helvetica", size=8)
-    for c in candidate_results:
-        pdf.set_x(12)
-        pdf.cell(0, 5, sanitize(f"* {c['name']}: {c['verdict']} - {c['override_note']}"))
-        pdf.ln(5)
-
-    pdf.ln(8)
-
-    # 2) Gap Matrix
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.set_text_color(30, 58, 138)
-    pdf.cell(0, 7, "2) 4-Tier Evidence Gap Matrix")
-    pdf.ln(6)
-
-    for c in candidate_results:
-        pdf.set_fill_color(224, 231, 255)
-        pdf.set_text_color(30, 27, 75)
-        pdf.set_font("Helvetica", "B", 9)
-        pdf.cell(190, 6, f"Candidate: {sanitize(c['name'])}  |  Score: {c['final_score']}/100  |  {sanitize(c['verdict'])}", border=1, fill=True)
-        pdf.ln(6)
-
-        # Gap Table Header
-        gw = [42, 50, 20, 26, 52]
-        gh = ["Skill / Area", "Expectation", "Type", "Status", "Evidence"]
         pdf.set_fill_color(241, 245, 249)
+        pdf.set_draw_color(203, 213, 225)
+        pdf.rect(10, pdf.get_y(), 190, 20, "DF")
+        pdf.set_xy(12, pdf.get_y() + 2)
+        pdf.set_font("Helvetica", "B", 8.5)
         pdf.set_text_color(71, 85, 105)
-        pdf.set_font("Helvetica", "B", 7.5)
-        for w, h in zip(gw, gh):
-            pdf.cell(w, 5, h, border=1, fill=True)
+        pdf.cell(0, 5, f"Screened Files: {sanitize(', '.join(file_names))}")
         pdf.ln(5)
+        pdf.set_x(12)
+        pdf.cell(0, 5, f"Active JD: {sanitize(active_jd_display)}")
+        pdf.ln(5)
+        pdf.set_x(12)
+        pdf.cell(0, 5, f"Candidates Ranked: {len(candidate_results)}")
+        pdf.ln(10)
 
-        pdf.set_font("Helvetica", size=7)
+        # 1) Ranking Leaderboard
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.set_text_color(30, 58, 138)
+        pdf.cell(0, 7, "1) Candidate Ranking Leaderboard")
+        pdf.ln(6)
+
+        col_w = [10, 42, 26, 38, 22, 52]
+        headers = ["#", "Candidate", "Score", "Verdict", "Exp", "Missing Mandatory"]
+        pdf.set_fill_color(30, 41, 59)
+        pdf.set_text_color(255, 255, 255)
+        pdf.set_font("Helvetica", "B", 8)
+        for w, h in zip(col_w, headers):
+            pdf.cell(w, 6, h, border=1, fill=True)
+        pdf.ln(6)
+
         pdf.set_text_color(30, 41, 59)
-        
-        all_skills = list(c.get("mandatory", {}).items()) + list(c.get("good_to_have", {}).items())
-        for k, v in all_skills:
-            req_type = "Mandatory" if k in c.get("mandatory", {}) else "Good-to-have"
-            status_text = v[0]
-            evidence_text = v[1] if len(v) > 1 else ""
+        pdf.set_font("Helvetica", size=7.5)
+        for idx, c in enumerate(candidate_results, 1):
+            missing_m = [k for k, v in c.get("mandatory", {}).items() if v[0] == "Missing"]
+            missing_str = ", ".join(missing_m[:2]) + ("..." if len(missing_m) > 2 else "") if missing_m else "None"
             
-            pdf.cell(gw[0], 5, sanitize(k[:24]), border=1)
-            pdf.cell(gw[1], 5, sanitize(k[:28]), border=1)
-            pdf.cell(gw[2], 5, req_type, border=1)
-            pdf.cell(gw[3], 5, sanitize(status_text[:14]), border=1)
-            pdf.cell(gw[4], 5, sanitize(evidence_text[:30]), border=1)
-            pdf.ln(5)
+            pdf.cell(col_w[0], 6, str(idx), border=1)
+            pdf.cell(col_w[1], 6, sanitize(c["name"][:22]), border=1)
+            pdf.set_font("Helvetica", "B", 7.5)
+            pdf.cell(col_w[2], 6, f"{c['final_score']}/100", border=1)
+            pdf.set_font("Helvetica", size=7.5)
+            pdf.cell(col_w[3], 6, sanitize(c["verdict"][:20]), border=1)
+            pdf.cell(col_w[4], 6, f"{c['years_exp']} yrs", border=1)
+            pdf.cell(col_w[5], 6, sanitize(missing_str[:28]), border=1)
+            pdf.ln(6)
 
         pdf.ln(4)
 
-    # 3) Candidate Details
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.set_text_color(30, 58, 138)
-    pdf.cell(0, 7, "3) Detailed Candidate Arithmetic & Verdicts")
-    pdf.ln(6)
-
-    for idx, c in enumerate(candidate_results, 1):
-        pdf.set_font("Helvetica", "B", 9.5)
-        pdf.set_text_color(15, 23, 42)
-        pdf.cell(0, 5, f"{idx}. {sanitize(c['name'])} - {sanitize(c['verdict'])}")
+        # Key Takeaways
+        pdf.set_fill_color(254, 243, 199)
+        pdf.set_draw_color(245, 158, 11)
+        takeaway_h = 8 + (len(candidate_results) * 5.5)
+        pdf.rect(10, pdf.get_y(), 190, takeaway_h, "DF")
+        pdf.set_xy(12, pdf.get_y() + 2)
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_text_color(146, 64, 14)
+        pdf.cell(0, 5, "Key Takeaway & Override Decisions:")
         pdf.ln(5)
         pdf.set_font("Helvetica", size=8)
-        pdf.set_text_color(51, 65, 85)
-        pdf.cell(0, 4.5, f"Total Experience: {c['years_exp']} yrs  |  Final Score: {c['final_score']} / 100")
-        pdf.ln(4.5)
-        pdf.cell(0, 4.5, f"Score Breakdown: Mandatory {c['mandatory_score']}/85, Bonus {c['good_score']}/10, Exp Fit {c['exp_score']}/5 -> Raw: {c['raw_score']}/100")
-        pdf.ln(4.5)
-        pdf.cell(0, 4.5, f"Override Decision: {sanitize(c['override_note'])}")
+        for c in candidate_results:
+            pdf.set_x(12)
+            pdf.cell(0, 5, sanitize(f"* {c['name']}: {c['verdict']} - {c['override_note']}"))
+            pdf.ln(5)
+
+        pdf.ln(8)
+
+        # 2) Gap Matrix
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.set_text_color(30, 58, 138)
+        pdf.cell(0, 7, "2) 4-Tier Evidence Gap Matrix")
         pdf.ln(6)
 
-    return bytes(pdf.output())
+        for c in candidate_results:
+            pdf.set_fill_color(224, 231, 255)
+            pdf.set_text_color(30, 27, 75)
+            pdf.set_font("Helvetica", "B", 9)
+            pdf.cell(190, 6, f"Candidate: {sanitize(c['name'])}  |  Score: {c['final_score']}/100  |  {sanitize(c['verdict'])}", border=1, fill=True)
+            pdf.ln(6)
+
+            gw = [42, 50, 20, 26, 52]
+            gh = ["Skill / Area", "Expectation", "Type", "Status", "Evidence"]
+            pdf.set_fill_color(241, 245, 249)
+            pdf.set_text_color(71, 85, 105)
+            pdf.set_font("Helvetica", "B", 7.5)
+            for w, h in zip(gw, gh):
+                pdf.cell(w, 5, h, border=1, fill=True)
+            pdf.ln(5)
+
+            pdf.set_font("Helvetica", size=7)
+            pdf.set_text_color(30, 41, 59)
+            
+            all_skills = list(c.get("mandatory", {}).items()) + list(c.get("good_to_have", {}).items())
+            for k, v in all_skills:
+                req_type = "Mandatory" if k in c.get("mandatory", {}) else "Good-to-have"
+                status_text = v[0]
+                evidence_text = v[1] if len(v) > 1 else ""
+                
+                pdf.cell(gw[0], 5, sanitize(k[:24]), border=1)
+                pdf.cell(gw[1], 5, sanitize(k[:28]), border=1)
+                pdf.cell(gw[2], 5, req_type, border=1)
+                pdf.cell(gw[3], 5, sanitize(status_text[:14]), border=1)
+                pdf.cell(gw[4], 5, sanitize(evidence_text[:30]), border=1)
+                pdf.ln(5)
+
+            pdf.ln(4)
+
+        # 3) Candidate Details
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.set_text_color(30, 58, 138)
+        pdf.cell(0, 7, "3) Detailed Candidate Arithmetic & Verdicts")
+        pdf.ln(6)
+
+        for idx, c in enumerate(candidate_results, 1):
+            pdf.set_font("Helvetica", "B", 9.5)
+            pdf.set_text_color(15, 23, 42)
+            pdf.cell(0, 5, f"{idx}. {sanitize(c['name'])} - {sanitize(c['verdict'])}")
+            pdf.ln(5)
+            pdf.set_font("Helvetica", size=8)
+            pdf.set_text_color(51, 65, 85)
+            pdf.cell(0, 4.5, f"Total Experience: {c['years_exp']} yrs  |  Final Score: {c['final_score']} / 100")
+            pdf.ln(4.5)
+            pdf.cell(0, 4.5, f"Score Breakdown: Mandatory {c['mandatory_score']}/85, Bonus {c['good_score']}/10, Exp Fit {c['exp_score']}/5 -> Raw: {c['raw_score']}/100")
+            pdf.ln(4.5)
+            pdf.cell(0, 4.5, f"Override Decision: {sanitize(c['override_note'])}")
+            pdf.ln(6)
+
+        return bytes(pdf.output())
+    except Exception:
+        return b""
 
 def generate_report_files(timestamp: str, candidate_results: list, file_names: list, active_jd_display: str):
     report_sub = REPORTS_DIR / timestamp
@@ -670,10 +713,7 @@ def generate_report_files(timestamp: str, candidate_results: list, file_names: l
     browser_bins = [
         os.environ.get("CHROME_BIN"),
         r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-        "/usr/bin/chromium",
-        "/usr/bin/chromium-browser",
-        "/usr/bin/google-chrome"
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe"
     ]
     browser_path = next((b for b in browser_bins if b and os.path.exists(b)), None)
     if browser_path:
@@ -707,7 +747,7 @@ with col1:
     if custom_jd_upload:
         st.success(f"✅ Using Custom JD: **{custom_jd_upload.name}**")
     else:
-        st.info("ℹ️ Using Active Ground Truth: **references/job-description.md (Default SDET 6–10 Yrs)**")
+        st.info("ℹ️ Using Active Ground Truth: **Default SDET JD (6–10 Yrs)**")
 
 with col2:
     st.subheader("👥 2. Candidate Profiles (Required)")
@@ -723,42 +763,48 @@ with col2:
 st.divider()
 
 if st.button("🚀 Screen Candidate Profiles", type="primary", use_container_width=True, disabled=not uploaded_resumes):
-    with st.spinner("⏳ Ingesting profiles, parsing evidence, and calculating rubric overrides..."):
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        upload_sub = RESUMES_DIR / timestamp
-        upload_sub.mkdir(parents=True, exist_ok=True)
+    try:
+        with st.spinner("⏳ Ingesting profiles, parsing evidence, and calculating rubric overrides..."):
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            upload_sub = RESUMES_DIR / timestamp
+            upload_sub.mkdir(parents=True, exist_ok=True)
 
-        custom_jd_text = None
-        jd_display_name = "references/job-description.md (Default SDET 6–10 Yrs)"
-        if custom_jd_upload:
-            jd_bytes = custom_jd_upload.getvalue()
-            (upload_sub / custom_jd_upload.name).write_bytes(jd_bytes)
-            custom_jd_text = extract_text_from_bytes(custom_jd_upload.name, jd_bytes)
-            role_title, _ = parse_custom_jd(custom_jd_text)
-            jd_display_name = f"Custom JD: {role_title} ({custom_jd_upload.name})"
-        elif DEFAULT_JD_PATH.exists():
-            custom_jd_text = DEFAULT_JD_PATH.read_text(encoding="utf-8", errors="ignore")
+            custom_jd_text = None
+            jd_display_name = "references/job-description.md (Default SDET 6–10 Yrs)"
+            if custom_jd_upload:
+                jd_bytes = custom_jd_upload.getvalue()
+                (upload_sub / custom_jd_upload.name).write_bytes(jd_bytes)
+                custom_jd_text = extract_text_from_bytes(custom_jd_upload.name, jd_bytes)
+                role_title, _, _ = parse_custom_jd(custom_jd_text)
+                jd_display_name = f"Custom JD: {role_title} ({custom_jd_upload.name})"
+            elif DEFAULT_JD_PATH.exists():
+                custom_jd_text = DEFAULT_JD_PATH.read_text(encoding="utf-8", errors="ignore")
+            else:
+                custom_jd_text = FALLBACK_DEFAULT_JD_TEXT
 
-        candidate_results = []
-        file_names = []
-        for r_file in uploaded_resumes:
-            r_bytes = r_file.getvalue()
-            (upload_sub / r_file.name).write_bytes(r_bytes)
-            text = extract_text_from_bytes(r_file.name, r_bytes)
-            cand_name = pathlib.Path(r_file.name).stem.replace("Naukri_", "").replace("_", " ").split("[")[0].strip()
-            res = evaluate_candidate(cand_name, text, custom_jd_text=custom_jd_text)
-            candidate_results.append(res)
-            file_names.append(r_file.name)
+            candidate_results = []
+            file_names = []
+            for r_file in uploaded_resumes:
+                r_bytes = r_file.getvalue()
+                (upload_sub / r_file.name).write_bytes(r_bytes)
+                text = extract_text_from_bytes(r_file.name, r_bytes)
+                cand_name = pathlib.Path(r_file.name).stem.replace("Naukri_", "").replace("_", " ").split("[")[0].strip()
+                res = evaluate_candidate(cand_name, text, custom_jd_text=custom_jd_text)
+                candidate_results.append(res)
+                file_names.append(r_file.name)
 
-        candidate_results.sort(key=lambda x: x["final_score"], reverse=True)
-        md_content, html_content, pdf_bytes, pdf_path = generate_report_files(timestamp, candidate_results, file_names, jd_display_name)
+            candidate_results.sort(key=lambda x: x["final_score"], reverse=True)
+            md_content, html_content, pdf_bytes, pdf_path = generate_report_files(timestamp, candidate_results, file_names, jd_display_name)
 
-        st.session_state["results"] = candidate_results
-        st.session_state["active_jd"] = jd_display_name
-        st.session_state["md_content"] = md_content
-        st.session_state["html_content"] = html_content
-        st.session_state["pdf_bytes"] = pdf_bytes
-        st.session_state["pdf_path"] = str(pdf_path)
+            st.session_state["results"] = candidate_results
+            st.session_state["active_jd"] = jd_display_name
+            st.session_state["md_content"] = md_content
+            st.session_state["html_content"] = html_content
+            st.session_state["pdf_bytes"] = pdf_bytes
+            st.session_state["pdf_path"] = str(pdf_path)
+            st.success(f"🎉 Successfully screened {len(candidate_results)} candidate profile(s)!")
+    except Exception as e:
+        st.error(f"❌ Error during screening: {str(e)}")
 
 if "results" in st.session_state:
     results = st.session_state["results"]
