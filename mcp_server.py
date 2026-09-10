@@ -283,34 +283,77 @@ def evaluate_profile(name: str, text: str, custom_jd_text: str = None) -> dict:
         "override_note": override_note
     }
 
+def save_resume_profile(candidate_name: str, resume_content: str, filename: str = None, timestamp_folder: pathlib.Path = None) -> pathlib.Path:
+    """
+    Ensure the 'Resumes' folder exists (creating it if needed),
+    and save the candidate profile into a dedicated timestamped subfolder:
+    Resumes/<YYYY-MM-DD_HH-MM-SS>/
+    """
+    RESUMES_DIR.mkdir(parents=True, exist_ok=True)
+    if timestamp_folder is None:
+        ts = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        timestamp_folder = RESUMES_DIR / ts
+    timestamp_folder.mkdir(parents=True, exist_ok=True)
+
+    if filename:
+        clean_filename = pathlib.Path(filename).name
+    else:
+        clean_name = re.sub(r'[^\w\-_\. ]', '_', candidate_name).strip()
+        clean_filename = f"{clean_name}.txt"
+
+    target_file = timestamp_folder / clean_filename
+    target_file.write_text(resume_content, encoding="utf-8", errors="ignore")
+    return target_file
+
 # ================= MCP TOOLS =================
 
 @mcp.tool()
-def screen_candidate(candidate_name: str, resume_text: str, custom_jd_text: str = None) -> dict:
+def screen_candidate(candidate_name: str, resume_text: str, filename: str = None, custom_jd_text: str = None) -> dict:
     """
     Screen a single candidate's resume text against the active ground truth Job Description (or custom JD).
+    Automatically creates the 'Resumes' directory for the first time (if not available),
+    creates a timestamped subfolder (Resumes/<YYYY-MM-DD_HH-MM-SS>/), and pastes/archives the candidate profile into it.
     Applies the 4-tier no-inflation engine (Matched 1.0x, Partial 0.6x, Claimed 0.3x, Missing 0.0x),
     evaluates against the 100-point rubric, and returns a detailed gap matrix and override verdict.
     """
-    return evaluate_profile(candidate_name, resume_text, custom_jd_text=custom_jd_text)
+    ts_folder = RESUMES_DIR / datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    saved_path = save_resume_profile(candidate_name, resume_text, filename=filename, timestamp_folder=ts_folder)
+
+    result = evaluate_profile(candidate_name, resume_text, custom_jd_text=custom_jd_text)
+    result["saved_resume_path"] = str(saved_path)
+    result["resume_folder"] = str(ts_folder)
+    return result
 
 @mcp.tool()
 def screen_batch_resumes(resumes: list[dict], custom_jd_text: str = None) -> dict:
     """
     Batch screen multiple candidate resumes and return ranked leaderboard and summary insights.
-    Each item in `resumes` should be a dict with `name` and `text`.
+    Automatically creates the 'Resumes' directory for the first time (if not available),
+    creates a dedicated timestamped subfolder (Resumes/<YYYY-MM-DD_HH-MM-SS>/), and pastes/archives all candidate profiles into it.
+    Each item in `resumes` should be a dict with `name` and `text` (and optional `filename`).
     """
+    RESUMES_DIR.mkdir(parents=True, exist_ok=True)
+    ts = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    ts_folder = RESUMES_DIR / ts
+    ts_folder.mkdir(parents=True, exist_ok=True)
+
     results = []
     for item in resumes:
         name = item.get("name", "Unnamed Candidate")
         text = item.get("text", "")
+        fname = item.get("filename", None)
+        saved_path = save_resume_profile(name, text, filename=fname, timestamp_folder=ts_folder)
+
         res = evaluate_profile(name, text, custom_jd_text=custom_jd_text)
+        res["saved_resume_path"] = str(saved_path)
+        res["resume_folder"] = str(ts_folder)
         results.append(res)
 
     results.sort(key=lambda x: x["final_score"], reverse=True)
     return {
         "active_jd": results[0]["target_role"] if results else "Standard SDET",
         "total_ranked": len(results),
+        "resumes_archived_folder": str(ts_folder),
         "candidates": results
     }
 
